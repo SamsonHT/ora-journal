@@ -10,13 +10,12 @@ export default function Login() {
 
   // Quick login handler for demo purposes
   const handleRoleLogin = (role) => {
-    // In a real app, you would call your API here, get a JWT, and then redirect.
-    // For now, we just redirect to the specific dashboard.
     if (role === 'admin') navigate('/admin/dashboard');
     if (role === 'author') navigate('/author/dashboard');
     if (role === 'reviewer') navigate('/reviewer/dashboard');
     if (role === 'eic') navigate('/eic/dashboard');
-    if (role === 'editor') navigate('/editor/dashboard');
+    // FIXED: Point to the correct managing-editor route
+    if (role === 'editor') navigate('/managing-editor/dashboard'); 
   };
 
   return (

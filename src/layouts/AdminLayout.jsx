@@ -12,11 +12,69 @@ import {
 } from '@ant-design/icons';
 
 export const sidebarPresets = {
-  maroon: { name: 'Classic Maroon', bg: 'bg-gradient-to-b from-[#531324] to-[#2D0A14] border-r border-[#3D0F1C]', text: 'text-[#E0C3D0]', activeBg: 'bg-white text-[#7A1849] shadow-lg scale-[1.02]', activeText: 'text-[#7A1849]', hover: 'hover:bg-white/10 hover:text-white', icon: 'text-[#E0C3D0]' },
-  light: { name: 'Clean Light', bg: 'bg-white border-r border-gray-200', text: 'text-gray-600', activeBg: 'bg-[#7A1849] text-white shadow-md', activeText: 'text-white', hover: 'hover:bg-[#FCF7F9] hover:text-[#7A1849]', icon: 'text-gray-500' },
-  solid: { name: 'Bold Solid', bg: 'bg-[#7A1849] border-r border-[#5E1136]', text: 'text-[#F3D5E1]', activeBg: 'bg-[#531324] text-white shadow-lg border border-white/10', activeText: 'text-white', hover: 'hover:bg-white/10 hover:text-white', icon: 'text-[#F3D5E1]' },
-  emerald: { name: 'Deep Emerald', bg: 'bg-gradient-to-b from-[#064E3B] to-[#022C22] border-r border-[#065F46]', text: 'text-[#A7F3D0]', activeBg: 'bg-[#10B981] text-white shadow-lg', activeText: 'text-white', hover: 'hover:bg-[#059669]/50 hover:text-white', icon: 'text-[#6EE7B7]' },
-  dark: { name: 'Midnight (Dark)', bg: 'bg-[#1A1A1A] border-r border-[#2D2D2D]', text: 'text-gray-400', activeBg: 'bg-[#7A1849] text-white shadow-md', activeText: 'text-white', hover: 'hover:bg-[#2A2A2A] hover:text-white', icon: 'text-gray-400' }
+  maroon: {
+    name: 'Classic Maroon',
+    bg: 'bg-gradient-to-b from-[#531324] to-[#2D0A14] border-r border-[#3D0F1C]',
+    text: 'text-[#E0C3D0]',
+    activeBg: 'bg-white text-[#7A1849] shadow-lg scale-[1.02]',
+    activeText: 'text-[#7A1849]',
+    hover: 'hover:bg-white/10 hover:text-white',
+    icon: 'text-[#E0C3D0]',
+  },
+  light: {
+    name: 'Clean Light',
+    bg: 'bg-white border-r border-gray-200',
+    text: 'text-gray-600',
+    activeBg: 'bg-[#7A1849] text-white shadow-md',
+    activeText: 'text-white',
+    hover: 'hover:bg-[#FCF7F9] hover:text-[#7A1849]',
+    icon: 'text-gray-500',
+  },
+  solid: {
+    name: 'Bold Solid',
+    bg: 'bg-[#7A1849] border-r border-[#5E1136]',
+    text: 'text-[#F3D5E1]',
+    activeBg: 'bg-[#531324] text-white shadow-lg border border-white/10',
+    activeText: 'text-white',
+    hover: 'hover:bg-white/10 hover:text-white',
+    icon: 'text-[#F3D5E1]',
+  },
+  emerald: {
+    name: 'Deep Emerald',
+    bg: 'bg-gradient-to-b from-[#064E3B] to-[#022C22] border-r border-[#065F46]',
+    text: 'text-[#A7F3D0]',
+    activeBg: 'bg-[#10B981] text-white shadow-lg',
+    activeText: 'text-white',
+    hover: 'hover:bg-[#059669]/50 hover:text-white',
+    icon: 'text-[#6EE7B7]',
+  },
+  royal: {
+    name: 'Royal Blue',
+    bg: 'bg-gradient-to-b from-[#1E3A8A] to-[#172554] border-r border-[#1E40AF]',
+    text: 'text-[#BFDBFE]',
+    activeBg: 'bg-[#3B82F6] text-white shadow-lg',
+    activeText: 'text-white',
+    hover: 'hover:bg-[#2563EB]/50 hover:text-white',
+    icon: 'text-[#93C5FD]',
+  },
+  sunset: {
+    name: 'Warm Sunset',
+    bg: 'bg-gradient-to-b from-[#7C2D12] to-[#431407] border-r border-[#9A3412]',
+    text: 'text-[#FED7AA]',
+    activeBg: 'bg-[#EA580C] text-white shadow-lg',
+    activeText: 'text-white',
+    hover: 'hover:bg-[#C2410C]/50 hover:text-white',
+    icon: 'text-[#FDBA74]',
+  },
+  dark: {
+    name: 'Midnight (Dark)',
+    bg: 'bg-[#1A1A1A] border-r border-[#2D2D2D]',
+    text: 'text-gray-400',
+    activeBg: 'bg-[#7A1849] text-white shadow-md',
+    activeText: 'text-white',
+    hover: 'hover:bg-[#2A2A2A] hover:text-white',
+    icon: 'text-gray-400',
+  }
 };
 
 export default function AdminLayout({ children }) {
@@ -31,7 +89,8 @@ export default function AdminLayout({ children }) {
   // Path checks
   const isAuthorPath = currentPath.includes('author');
   const isEiCPath = currentPath.includes('eic');
-  const isReviewerPath = currentPath.includes('reviewer'); // <--- FIXED
+  const isReviewerPath = currentPath.includes('reviewer');
+  const isMEPath = currentPath.includes('managing-editor'); // <--- THIS WAS MISSING
 
   const activePresetKey = isDarkMode ? 'dark' : (sidebarTheme || 'maroon');
   const currentPreset = sidebarPresets[activePresetKey];
@@ -61,12 +120,21 @@ export default function AdminLayout({ children }) {
         { name: 'Reports', icon: <BarChartOutlined />, path: '/eic/reports' },
         { name: 'Settings', icon: <SettingOutlined />, path: '/eic/settings' },
       ]
-    : isReviewerPath // <--- ADDED
+    : isReviewerPath
     ? [
         { name: 'Dashboard', icon: <AppstoreOutlined />, path: '/reviewer/dashboard' },
         { name: 'My Assignments', icon: <FileTextOutlined />, path: '/reviewer/assignments' },
         { name: 'Pending Review', icon: <ClockCircleOutlined />, path: '/reviewer/pending' },
         { name: 'Settings', icon: <SettingOutlined />, path: '/reviewer/settings' },
+      ]
+    : isMEPath
+    ? [
+        { name: 'Dashboard', icon: <AppstoreOutlined />, path: '/managing-editor/dashboard' },
+        { name: 'Pending Production', icon: <ClockCircleOutlined />, path: '/managing-editor/pending-production' },
+        { name: 'Published Manuscripts', icon: <CheckCircleOutlined />, path: '/managing-editor/published' },
+        { name: 'Issues', icon: <TagsOutlined />, path: '/managing-editor/issues' },
+        { name: 'Reports', icon: <BarChartOutlined />, path: '/managing-editor/reports' },
+        { name: 'Settings', icon: <SettingOutlined />, path: '/managing-editor/settings' },
       ]
     : [
         { name: 'Dashboard', icon: <AppstoreOutlined />, path: '/admin/dashboard' },
@@ -97,7 +165,7 @@ export default function AdminLayout({ children }) {
                 <div className="flex flex-col">
                   <span className={`text-[16px] font-serif font-bold leading-tight ${currentPreset.text}`}>ORA</span>
                   <span className={`text-[8px] tracking-[0.2em] uppercase font-semibold opacity-80 ${currentPreset.text}`}>
-                    {isAuthorPath ? 'Author' : isEiCPath ? 'Editor-in-Chief' : isReviewerPath ? 'Reviewer' : 'Journal Admin'}
+                    {isAuthorPath ? 'Author' : isEiCPath ? 'Editor-in-Chief' : isReviewerPath ? 'Reviewer' : isMEPath ? 'Managing Editor' : 'Journal Admin'}
                   </span>
                 </div>
               </Link>
@@ -170,7 +238,7 @@ export default function AdminLayout({ children }) {
             <div className="flex-1 overflow-y-auto py-6 px-4">
               <div className={`mb-6 px-3 py-2 rounded-xl border border-white/10 bg-white/5`}>
                 <p className={`text-[10px] font-bold uppercase tracking-widest ${currentPreset.text} opacity-80`}>
-                  {isAuthorPath ? 'Author Portal' : isEiCPath ? 'EiC Workspace' : isReviewerPath ? 'Reviewer Portal' : 'Journal Admin'}
+                  {isAuthorPath ? 'Author Portal' : isEiCPath ? 'EiC Workspace' : isReviewerPath ? 'Reviewer Portal' : isMEPath ? 'Managing Editor' : 'Journal Admin'}
                 </p>
               </div>
               
@@ -190,14 +258,14 @@ export default function AdminLayout({ children }) {
                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shadow-sm bg-white/20 backdrop-blur-sm ${currentPreset.text}`}>
-                      {isAuthorPath ? 'AB' : isEiCPath ? 'AM' : isReviewerPath ? 'RV' : 'LM'}
+                      {isAuthorPath ? 'AB' : isEiCPath ? 'AM' : isReviewerPath ? 'RV' : isMEPath ? 'ME' : 'LM'}
                     </div>
                     <div>
                       <p className={`text-[13px] font-bold ${currentPreset.text}`}>
-                        {isAuthorPath ? 'Abebe B.' : isEiCPath ? 'Ava Morgan' : isReviewerPath ? 'Dr. Reviewer' : 'Lena Moore'}
+                        {isAuthorPath ? 'Abebe B.' : isEiCPath ? 'Ava Morgan' : isReviewerPath ? 'Dr. Reviewer' : isMEPath ? 'Sarah Jenkins' : 'Lena Moore'}
                       </p>
                       <p className={`text-[10px] opacity-70 ${currentPreset.text}`}>
-                        {isAuthorPath ? 'Author' : isEiCPath ? 'Editor-in-Chief' : isReviewerPath ? 'Reviewer' : 'Journal Admin'}
+                        {isAuthorPath ? 'Author' : isEiCPath ? 'Editor-in-Chief' : isReviewerPath ? 'Reviewer' : isMEPath ? 'Managing Editor' : 'Journal Admin'}
                       </p>
                     </div>
                   </div>
@@ -256,7 +324,7 @@ export default function AdminLayout({ children }) {
                 <div className="relative">
                   <button onClick={() => setShowProfileMenu(!showProfileMenu)} className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-[#7A1849] text-white flex items-center justify-center text-[11px] font-bold shadow-sm">
-                      {isAuthorPath ? 'AB' : isEiCPath ? 'AM' : isReviewerPath ? 'RV' : 'LM'}
+                      {isAuthorPath ? 'AB' : isEiCPath ? 'AM' : isReviewerPath ? 'RV' : isMEPath ? 'ME' : 'LM'}
                     </div>
                     <DownOutlined className={`text-[10px] ${textMuted}`} />
                   </button>

@@ -57,6 +57,15 @@ import ViewInvitation from './pages/reviewer/ViewInvitation';
 import RecommendationForm from './pages/reviewer/RecommendationForm';
 import ReviewerSettings from './pages/reviewer/Settings';
 
+import MEDashboard from './pages/managing-editor/Dashboard';
+import PendingProduction from './pages/managing-editor/PendingProduction';
+import ProductionDetail from './pages/managing-editor/ProductionDetail';
+import PublishedManuscripts from './pages/managing-editor/Published';
+import MEIssues from './pages/managing-editor/Issues';
+import MEReports from './pages/managing-editor/Reports';
+import MESettings from './pages/managing-editor/Settings';
+import ViewPublished from './pages/managing-editor/ViewPublished';
+import AddIssue from './pages/managing-editor/AddIssue';
 
 function App() {
   return (
@@ -106,6 +115,16 @@ function App() {
 <Route path="/reviewer/invitation/:id" element={<ViewInvitation />} />
 <Route path="/reviewer/recommendation" element={<RecommendationForm />} />
 <Route path="/reviewer/settings" element={<ReviewerSettings />} />
+
+<Route path="/managing-editor/dashboard" element={<MEDashboard />} />
+<Route path="/managing-editor/pending-production" element={<PendingProduction />} />
+<Route path="/managing-editor/production/:id" element={<ProductionDetail />} />
+<Route path="/managing-editor/published" element={<PublishedManuscripts />} />
+<Route path="/managing-editor/published/:id" element={<ViewPublished />} />
+<Route path="/managing-editor/issues" element={<MEIssues />} />
+<Route path="/managing-editor/reports" element={<MEReports />} />
+<Route path="/managing-editor/settings" element={<MESettings />} />
+<Route path="/managing-editor/issues/add" element={<AddIssue />} /> 
 
           {/* ================= AUTHOR ROUTES ================= */}
           <Route path="/author/dashboard" element={<AuthorDashboard />} />
