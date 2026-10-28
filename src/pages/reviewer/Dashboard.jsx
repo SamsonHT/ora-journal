@@ -3,7 +3,7 @@ import AdminLayout from '../../layouts/AdminLayout';
 import { useTheme } from '../../context/ThemeContext';
 import { 
   FileTextOutlined, CheckCircleOutlined, ClockCircleOutlined, 
-  BookOutlined, ArrowRightOutlined, BulbOutlined 
+  BookOutlined, BulbOutlined 
 } from '@ant-design/icons';
 
 export default function ReviewerDashboard() {
@@ -18,21 +18,22 @@ export default function ReviewerDashboard() {
     <AdminLayout>
       <div className="max-w-[1300px] mx-auto animate-fade-in-up">
         
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <p className={`text-[11px] font-bold tracking-widest uppercase mb-1.5 ${textMuted}`}>Workspace / Reviewer Dashboard</p>
-            <h1 className={`text-3xl font-serif font-bold ${textMain}`}>Good morning, Ava</h1>
-            <p className={`text-[13px] mt-1 ${textMuted}`}>You have 4 manuscripts requiring evaluation. 1 has an urgent deadline.</p>
+            <p className={`text-[10px] font-bold tracking-[0.1em] uppercase text-[#7A1849] mb-1.5`}>WORKSPACE / REVIEWER DASHBOARD</p>
+            {/* Removed font-serif to match image */}
+            <h1 className={`text-[26px] font-bold tracking-tight ${textMain}`}>Good morning, Ava</h1>
+            <p className={`text-[13px] font-medium mt-1 ${textMuted}`}>You have 4 manuscripts requiring evaluation. 1 has an urgent deadline.</p>
           </div>
           <div className="flex gap-3">
-            <button className={`px-4 py-2 rounded-lg text-[12px] font-bold border ${isDarkMode ? 'border-gray-700 text-gray-300 hover:bg-gray-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50 bg-white'}`}>
+            <button className={`px-4 py-2 rounded-lg text-[13px] font-medium border ${isDarkMode ? 'border-gray-700 text-gray-300 hover:bg-gray-800' : 'border-gray-200 text-gray-700 bg-white hover:bg-gray-50'}`}>
               Sep 1 – Sep 25, 2026
             </button>
           </div>
         </div>
 
-        {/* Short Stats Cards */}
+        {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
             { l: 'Active Assignments', v: '4', sub: '+2 assigned this week', c: 'text-[#7A1849]', bg: 'bg-[#FCF7F9]', icon: <FileTextOutlined /> },
@@ -40,13 +41,13 @@ export default function ReviewerDashboard() {
             { l: 'Pending Recommendation', v: '1', sub: 'Requires evaluation today', c: 'text-red-500', bg: 'bg-red-50', icon: <ClockCircleOutlined /> },
             { l: 'Avg. Review Time', v: '12 Days', sub: '3 days faster than avg', c: 'text-blue-500', bg: 'bg-blue-50', icon: <BookOutlined /> },
           ].map((stat, i) => (
-            <div key={i} className={`p-5 rounded-2xl border shadow-sm flex flex-col justify-between transition-all hover:-translate-y-0.5 hover:shadow-md ${bgCard}`}>
+            <div key={i} className={`p-5 rounded-xl border shadow-sm flex flex-col justify-between transition-all hover:-translate-y-0.5 hover:shadow-md ${bgCard}`}>
               <div className="flex justify-between items-start mb-2">
-                <p className={`text-[12px] font-bold ${textMuted}`}>{stat.l}</p>
+                <p className={`text-[11px] font-bold uppercase tracking-wider ${textMuted}`}>{stat.l}</p>
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${stat.bg} ${stat.c}`}>{stat.icon}</div>
               </div>
               <div>
-                <h3 className={`text-3xl font-bold mb-1 ${textMain}`}>{stat.v}</h3>
+                <h3 className={`text-[24px] font-bold tracking-tight mb-1 ${textMain}`}>{stat.v}</h3>
                 <p className={`text-[11px] font-bold ${stat.c}`}>{stat.sub}</p>
               </div>
             </div>
@@ -59,9 +60,9 @@ export default function ReviewerDashboard() {
           <div className="lg:col-span-2 space-y-6">
             
             {/* Recent Activity Timeline */}
-            <div className={`p-6 rounded-2xl border shadow-sm ${bgCard}`}>
+            <div className={`p-6 rounded-xl border shadow-sm ${bgCard}`}>
               <div className="flex justify-between items-center mb-6">
-                <h2 className={`text-[16px] font-bold ${textMain}`}>Recent Activity Timeline</h2>
+                <h2 className={`text-[15px] font-bold tracking-tight ${textMain}`}>Recent Activity Timeline</h2>
                 <button className="text-[12px] font-bold text-[#7A1849] hover:underline">View all history</button>
               </div>
               
@@ -74,16 +75,16 @@ export default function ReviewerDashboard() {
                   <div key={i} className="ml-6 relative">
                     <span className={`absolute -left-[31px] top-1.5 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-[#1E1E1E] ${item.color} shadow-sm`}></span>
                     <h3 className={`text-[13px] font-bold mb-0.5 leading-snug ${textMain}`}>{item.title}</h3>
-                    <p className={`text-[11px] mb-1 ${textMuted}`}>{item.time} • {item.meta}</p>
+                    <p className={`text-[11px] font-medium mb-1 ${textMuted}`}>{item.time} • {item.meta}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Historical Performance Chart */}
-            <div className={`p-6 rounded-2xl border shadow-sm ${bgCard}`}>
+            <div className={`p-6 rounded-xl border shadow-sm ${bgCard}`}>
               <div className="flex justify-between items-center mb-6">
-                <h2 className={`text-[16px] font-bold ${textMain}`}>Monthly Manuscript Volume</h2>
+                <h2 className={`text-[15px] font-bold tracking-tight ${textMain}`}>Monthly Manuscript Volume</h2>
                 <span className={`text-[11px] font-medium ${textMuted}`}>Illustrative data</span>
               </div>
               
@@ -109,8 +110,8 @@ export default function ReviewerDashboard() {
           <div className="space-y-6">
             
             {/* Upcoming Deadlines */}
-            <div className={`p-6 rounded-2xl border shadow-sm ${bgCard}`}>
-              <h2 className={`text-[16px] font-bold mb-5 ${textMain}`}>Upcoming Review Deadlines</h2>
+            <div className={`p-6 rounded-xl border shadow-sm ${bgCard}`}>
+              <h2 className={`text-[15px] font-bold tracking-tight mb-5 ${textMain}`}>Upcoming Review Deadlines</h2>
               
               <div className="space-y-4">
                 {/* Urgent Deadline */}
@@ -118,8 +119,8 @@ export default function ReviewerDashboard() {
                   <div className="flex justify-between items-start mb-1.5">
                     <span className="text-[9px] font-bold text-red-600 uppercase tracking-wider bg-white dark:bg-transparent px-1.5 py-0.5 rounded border border-red-200">Urgent Evaluation Required</span>
                   </div>
-                  <p className={`text-[13px] font-bold mb-1 ${textMain}`}>Deep learning approaches in neurological diagnostics</p>
-                  <p className="text-[11px] text-red-600 font-bold">Due in 2 days (Sep 27, 2026)</p>
+                  <p className={`text-[13px] font-bold mb-1 leading-snug ${textMain}`}>Deep learning approaches in neurological diagnostics</p>
+                  <p className="text-[11px] font-bold text-red-600">Due in 2 days (Sep 27, 2026)</p>
                 </div>
 
                 {/* Normal Deadline */}
@@ -127,22 +128,22 @@ export default function ReviewerDashboard() {
                   <div className="flex justify-between items-start mb-1.5">
                     <span className="text-[9px] font-bold text-amber-600 uppercase tracking-wider bg-white dark:bg-transparent px-1.5 py-0.5 rounded border border-amber-200">Pending Review</span>
                   </div>
-                  <p className={`text-[13px] font-bold mb-1 ${textMain}`}>Quantum computing limits on cryptographic schemas</p>
-                  <p className="text-[11px] text-amber-600 font-bold">Due in 12 days (Oct 7, 2026)</p>
+                  <p className={`text-[13px] font-bold mb-1 leading-snug ${textMain}`}>Quantum computing limits on cryptographic schemas</p>
+                  <p className="text-[11px] font-bold text-amber-600">Due in 12 days (Oct 7, 2026)</p>
                 </div>
               </div>
             </div>
 
             {/* Reviewer Tips Card */}
-            <div className={`p-6 rounded-2xl border shadow-sm ${bgCard}`}>
+            <div className={`p-6 rounded-xl border shadow-sm ${bgCard}`}>
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 rounded-full bg-[#FCF7F9] flex items-center justify-center"><BulbOutlined className="text-[#7A1849]" /></div>
-                <h3 className={`text-[14px] font-bold ${textMain}`}>Reviewer Guidelines</h3>
+                <h3 className={`text-[14px] font-bold tracking-tight ${textMain}`}>Reviewer Guidelines</h3>
               </div>
               <p className={`text-[12px] leading-relaxed mb-4 ${textMuted}`}>
                 Ensure your feedback is constructive, professional, and directly addresses the manuscript's methodology and originality. 
               </p>
-              <ul className={`text-[11px] space-y-1.5 ${textMuted}`}>
+              <ul className={`text-[11px] space-y-1.5 font-medium ${textMuted}`}>
                 <li>• Maintain blind review confidentiality.</li>
                 <li>• Justify your recommendation score.</li>
                 <li>• Submit before the deadline.</li>

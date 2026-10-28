@@ -2,64 +2,148 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../../layouts/AdminLayout';
 import { useTheme } from '../../context/ThemeContext';
-import { Table, Button, Input, Select, Tag } from 'antd';
-import { SearchOutlined, FileTextOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { SearchOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 export default function FinalDecisions() {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('All');
   const [searchText, setSearchText] = useState('');
-  const bgCard = isDarkMode ? 'bg-[#1E1E1E] border-[#2D2D2D]' : 'bg-white border-gray-100';
+
+  const bgCard = isDarkMode ? 'bg-[#1E1E1E] border-[#2D2D2D]' : 'bg-white border-gray-200';
   const textMain = isDarkMode ? 'text-gray-100' : 'text-gray-900';
   const textMuted = isDarkMode ? 'text-gray-400' : 'text-gray-500';
+  const borderCol = isDarkMode ? 'border-[#2D2D2D]' : 'border-gray-100';
 
   const data = [
-    { key: '1', id: 'MS-2026-020', title: 'Renewable energy storage...', author: 'Dr. A. Bello', reviewers: '2 / 2 Completed', date: 'Oct 02, 2026', rec: 'Accept' },
-    { key: '2', id: 'MS-2026-021', title: 'Advanced neural networks...', author: 'Prof. J. Smith', reviewers: '2 / 2 Completed', date: 'Oct 03, 2026', rec: 'Minor Revision' },
-    { key: '3', id: 'MS-2026-022', title: 'Structural analysis of composites...', author: 'Dr. L. Chen', reviewers: '2 / 2 Completed', date: 'Oct 04, 2026', rec: 'Reject' },
+    { id: 'ORA-2026-077', title: 'Reinforcement learning in autonomous flight pat...', author: 'Dr. Rachel Green', acc: 3, min: 0, maj: 0, rej: 0, date: 'Sep 24, 2026' },
+    { id: 'ORA-2026-068', title: 'Micro-structural analysis of silicon anodes for hi...', author: 'Liam Neeson et al.', acc: 1, min: 1, maj: 0, rej: 0, date: 'Sep 22, 2026' },
+    { id: 'ORA-2026-059', title: 'Socio-economic impact of rural grid electrificati...', author: 'Marcus Aurelius', acc: 0, min: 0, maj: 1, rej: 2, date: 'Sep 15, 2026' },
+    { id: 'ORA-2026-054', title: 'Predictive structural analysis of historical bridge...', author: 'Nikola Tesla', acc: 0, min: 2, maj: 1, rej: 0, date: 'Sep 08, 2026' },
   ];
 
-  const columns = [
-    { title: 'ID', dataIndex: 'id', render: t => <span className={`text-[12px] font-mono ${textMain}`}>{t}</span> },
-    { title: 'TITLE', dataIndex: 'title', render: t => <span className={`text-[13px] font-bold ${textMain}`}>{t}</span> },
-    { title: 'AUTHOR', dataIndex: 'author' },
-    { title: 'AE RECOMMENDATION', dataIndex: 'rec', render: r => {
-        let color = r === 'Accept' ? 'success' : r === 'Reject' ? 'error' : 'warning';
-        return <Tag color={color} className="rounded-full border-0 font-bold text-[10px] uppercase px-2">{r}</Tag>;
-    }},
-    { title: 'ACTION', align: 'right', render: (_, r) => <Button onClick={() => navigate(`/eic/decide/${r.key}`)} className="bg-[#7A1849] text-white font-bold text-[12px] rounded-lg border-0 hover:bg-[#5E1136]">Make Decision</Button> }
-  ];
+  const filteredData = data.filter(row => {
+    return row.title.toLowerCase().includes(searchText.toLowerCase()) || row.id.toLowerCase().includes(searchText.toLowerCase());
+  });
 
   return (
     <AdminLayout>
-      <div className="max-w-[1300px] mx-auto animate-fade-in-up">
+      <div className="max-w-[1400px] mx-auto animate-fade-in-up">
+        
+        {/* Header */}
         <div className="mb-6">
-          <h1 className={`text-2xl font-serif font-bold ${textMain}`}>Final Decisions</h1>
-          <p className={`text-[13px] text-gray-500`}>Review completed peer reviews and make final editorial decisions.</p>
+          <p className={`text-[10px] font-bold tracking-[0.1em] uppercase mb-1.5 ${textMuted}`}>WORKSPACE / DECISIONS</p>
+          <h1 className={`text-[26px] font-bold tracking-tight ${textMain}`}>Final Decisions</h1>
+          <p className={`text-[13px] font-medium mt-1 ${textMuted}`}>Review consensus peer metrics and output final accepted or rejected academic drafts.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          {[
-            { l: 'Awaiting Final Decision', v: '3', c: 'text-[#7A1849]', icon: <FileTextOutlined /> },
-            { l: 'Accepted (This Month)', v: '8', c: 'text-green-500', icon: <CheckCircleOutlined /> },
-            { l: 'Rejected (This Month)', v: '16', c: 'text-red-500', icon: <CloseCircleOutlined /> },
-          ].map((s, i) => (
-            <div key={i} className={`p-4 rounded-xl border shadow-sm flex items-center justify-between ${bgCard}`}>
-              <div><p className={`text-[11px] font-bold uppercase tracking-wider ${textMuted}`}>{s.l}</p><h3 className={`text-2xl font-bold mt-1 ${s.c}`}>{s.v}</h3></div>
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-opacity-10 ${s.c.replace('text-','bg-')} ${s.c}`}>{s.icon}</div>
+        {/* Main Table Container */}
+        <div className={`rounded-xl border shadow-sm overflow-hidden ${bgCard}`}>
+          
+          {/* Toolbar: Tabs & Search */}
+          <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center p-4 border-b border-gray-100 dark:border-gray-800 gap-4">
+            
+            {/* Tab Filters with Count */}
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setActiveTab('All')}
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-[12px] font-bold transition-all bg-[#7A1849] text-white shadow-sm`}
+              >
+                All
+                <span className="px-1.5 py-0.5 rounded-md text-[10px] bg-white text-[#7A1849]">
+                  {data.length}
+                </span>
+              </button>
             </div>
-          ))}
-        </div>
 
-        <div className={`p-6 rounded-2xl border shadow-sm ${bgCard}`}>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-            <Input placeholder="Search by title or ID..." prefix={<SearchOutlined />} value={searchText} onChange={(e) => setSearchText(e.target.value)} className={`w-72 rounded-xl ${isDarkMode ? 'bg-[#1A1A1A] border-[#3D3D3D] text-white' : 'bg-gray-50'}`} />
-            <Select defaultValue="All" className="w-32 h-9" options={[{ value: 'All', label: 'All' }, { value: 'Accept', label: 'Accept' }]} />
+            {/* Search Bar */}
+            <div className="relative w-full xl:w-72 shrink-0">
+              <SearchOutlined className="absolute left-3 top-2.5 text-gray-400 text-[13px]" />
+              <input 
+                type="text" 
+                placeholder="Search papers by title or author..." 
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                className={`w-full pl-9 pr-3 py-2 rounded-lg border text-[12px] font-medium outline-none focus:ring-2 focus:ring-[#7A1849]/20 transition-all ${
+                  isDarkMode 
+                    ? 'bg-[#1A1A1A] border-[#3D3D3D] text-white focus:border-[#7A1849]' 
+                    : 'bg-white border-gray-200 text-gray-600 focus:border-[#7A1849]'
+                }`}
+              />
+            </div>
           </div>
-          <Table columns={columns} dataSource={data} pagination={false} className={`ora-table ${isDarkMode ? 'dark-table' : ''}`} />
+
+          {/* Custom Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-[#7A1849] text-white">
+                  <th className="px-6 py-3.5 text-[10px] font-bold uppercase tracking-wider">Manuscript ID</th>
+                  <th className="px-6 py-3.5 text-[10px] font-bold uppercase tracking-wider">Paper Title</th>
+                  <th className="px-6 py-3.5 text-[10px] font-bold uppercase tracking-wider">Author(s)</th>
+                  <th className="px-6 py-3.5 text-[10px] font-bold uppercase tracking-wider">Peer Recommendations</th>
+                  <th className="px-6 py-3.5 text-[10px] font-bold uppercase tracking-wider">Reviews Finished</th>
+                  <th className="px-6 py-3.5 text-[10px] font-bold uppercase tracking-wider text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className={`divide-y ${isDarkMode ? 'divide-[#2D2D2D]' : 'divide-gray-100'}`}>
+                {filteredData.map((row, idx) => (
+                  <tr key={idx} className={`${isDarkMode ? 'hover:bg-[#2A2A2A]' : 'hover:bg-gray-50'} transition-colors`}>
+                    <td className={`px-6 py-4 text-[12px] font-bold ${textMain}`}>{row.id}</td>
+                    <td className={`px-6 py-4 text-[13px] font-bold ${textMain} max-w-[280px]`}>{row.title}</td>
+                    <td className={`px-6 py-4 text-[12px] font-medium ${textMuted}`}>{row.author}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex gap-2">
+                        <span className="text-[11px] font-bold text-green-600">{row.acc} Acc</span>
+                        <span className="text-[11px] font-bold text-blue-600">{row.min} Min</span>
+                        <span className="text-[11px] font-bold text-amber-600">{row.maj} Maj</span>
+                        <span className="text-[11px] font-bold text-red-600">{row.rej} Rej</span>
+                      </div>
+                    </td>
+                    <td className={`px-6 py-4 text-[12px] font-medium ${textMuted}`}>{row.date}</td>
+                    <td className="px-6 py-4 text-right">
+                      <button 
+                        onClick={() => navigate(`/eic/decide/${row.id}`)}
+                        className="bg-[#7A1849] text-white px-4 py-1.5 rounded-md text-[11px] font-bold hover:bg-[#5E1136] transition-colors shadow-sm"
+                      >
+                        Decide
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {filteredData.length === 0 && (
+                  <tr>
+                    <td colSpan="6" className={`px-6 py-10 text-center text-[13px] font-medium ${textMuted}`}>
+                      No manuscripts found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className={`px-6 py-4 border-t flex flex-col md:flex-row justify-between items-center gap-4 ${borderCol}`}>
+            <p className={`text-[12px] font-medium ${textMuted}`}>
+              Showing <span className={`font-bold ${textMain}`}>1–{filteredData.length}</span> of <span className={`font-bold ${textMain}`}>{filteredData.length}</span> manuscripts
+            </p>
+            <div className="flex items-center gap-1.5">
+              <button className={`w-8 h-8 flex items-center justify-center rounded-md border text-[12px] font-bold transition-colors ${isDarkMode ? 'border-gray-700 text-gray-500 hover:bg-gray-800' : 'border-gray-200 text-gray-400 hover:bg-gray-50'}`}>
+                <LeftOutlined className="text-[10px]" />
+              </button>
+              <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[#7A1849] text-white text-[12px] font-bold shadow-sm">1</button>
+              <button className={`w-8 h-8 flex items-center justify-center rounded-md border text-[12px] font-bold transition-colors ${isDarkMode ? 'border-gray-700 text-gray-300 hover:bg-gray-800' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>2</button>
+              <button className={`w-8 h-8 flex items-center justify-center rounded-md border text-[12px] font-bold transition-colors ${isDarkMode ? 'border-gray-700 text-gray-300 hover:bg-gray-800' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>3</button>
+              <span className={`px-1 ${textMuted}`}>...</span>
+              <button className={`w-8 h-8 flex items-center justify-center rounded-md border text-[12px] font-bold transition-colors ${isDarkMode ? 'border-gray-700 text-gray-300 hover:bg-gray-800' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>8</button>
+              <button className={`w-8 h-8 flex items-center justify-center rounded-md border text-[12px] font-bold transition-colors ${isDarkMode ? 'border-gray-700 text-gray-300 hover:bg-gray-800' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+                <RightOutlined className="text-[10px]" />
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
-      <style dangerouslySetInnerHTML={{__html: `.ora-table .ant-table-thead > tr > th { background-color: #7A1849 !important; color: white !important; text-transform: uppercase; font-size: 11px; font-weight: bold; border-bottom: none; padding: 14px 16px; } .dark-table .ant-table { background: transparent; color: #E5E7EB; } .dark-table .ant-table-tbody > tr > td { color: #E5E7EB; border-bottom: 1px solid #2D2D2D; padding: 14px 16px; }`}} />
     </AdminLayout>
   );
 }

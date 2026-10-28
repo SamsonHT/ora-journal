@@ -1,67 +1,173 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../../layouts/AdminLayout';
 import { useTheme } from '../../context/ThemeContext';
-import { Table, Tag, Button } from 'antd';
+import { SearchOutlined, DownOutlined, CheckOutlined } from '@ant-design/icons';
+
+// Custom Subject Dropdown Component
+const SubjectDropdown = ({ isDarkMode }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState('All');
+  const dropdownRef = useRef(null);
+
+  const options = ['All', 'Artificial Intelligence', 'Material Science', 'Thermodynamics', 'Discrete Mathematics'];
+
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className={`flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-[12px] font-bold border transition-colors ${
+          isDarkMode 
+            ? 'bg-[#1A1A1A] border-[#3D3D3D] text-gray-300' 
+            : 'bg-white border-gray-200 text-gray-700'
+        } hover:border-[#7A1849]/50`}
+      >
+        <span>Subject: {selected}</span>
+        <DownOutlined className={`text-[10px] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      {isOpen && (
+        <div className={`absolute top-full left-0 mt-2 w-56 rounded-xl shadow-xl border z-50 overflow-hidden ${
+          isDarkMode ? 'bg-[#1E1E1E] border-[#2D2D2D]' : 'bg-white border-gray-100'
+        }`}>
+          {options.map((option) => (
+            <button
+              key={option}
+              onClick={() => { setSelected(option); setIsOpen(false); }}
+              className={`w-full text-left px-4 py-2.5 text-[12px] font-medium transition-colors flex justify-between items-center ${
+                selected === option 
+                  ? 'bg-[#7A1849] text-white' 
+                  : isDarkMode 
+                    ? 'text-gray-300 hover:bg-[#7A1849]/20 hover:text-white' 
+                    : 'text-gray-700 hover:bg-[#FCF7F9] hover:text-[#7A1849]'
+              }`}
+            >
+              {option}
+              {selected === option && <CheckOutlined className="text-[10px]" />}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function PendingReview() {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
-  const bgCard = isDarkMode ? 'bg-[#1E1E1E] border-[#2D2D2D]' : 'bg-white border-gray-100';
+  
+  const bgCard = isDarkMode ? 'bg-[#1E1E1E] border-[#2D2D2D]' : 'bg-white border-gray-200';
   const textMain = isDarkMode ? 'text-gray-100' : 'text-gray-900';
   const textMuted = isDarkMode ? 'text-gray-400' : 'text-gray-500';
 
   const data = [
-    { key: '1', id: 'ORA-2026-077', title: 'Reinforcement learning in autonomous flight paths', area: 'Artificial Intelligence', priority: 'URGENT', due: '2 days remaining' },
-    { key: '2', id: 'ORA-2026-081', title: 'Micro-structural analysis of silicon anodes', area: 'Material Science', priority: 'NORMAL', due: '12 days remaining' },
-    { key: '3', id: 'ORA-2026-098', title: 'Anomalous heat variance in micro-reactors', area: 'Thermodynamics', priority: 'NORMAL', due: '20 days remaining' },
-    { key: '4', id: 'ORA-2026-102', title: 'Graph-theoretic approaches in highly clustered networks', area: 'Discrete Mathematics', priority: 'LOW', due: '25 days remaining' },
+    { id: 'ORA-2026-077', title: 'Reinforcement learning in autonomous flight paths', area: 'Artificial Intelligence', priority: 'URGENT', due: '2 days remaining', action: 'Continue' },
+    { id: 'ORA-2026-081', title: 'Micro-structural analysis of silicon anodes in solid-state batteries', area: 'Material Science', priority: 'NORMAL', due: '12 days remaining', action: 'Start Review' },
+    { id: 'ORA-2026-098', title: 'Anomalous heat variance in pressurized micro-reactors', area: 'Thermodynamics', priority: 'NORMAL', due: '20 days remaining', action: 'Start Review' },
+    { id: 'ORA-2026-102', title: 'Graph-theoretic approaches in highly clustered social networks', area: 'Discrete Mathematics', priority: 'LOW', due: '25 days remaining', action: 'Start Review' },
   ];
 
-  const columns = [
-    { title: 'ID', dataIndex: 'id', render: t => <span className={`text-[12px] font-mono font-bold ${textMain}`}>{t}</span> },
-    { title: 'TITLE', dataIndex: 'title', render: t => <span className={`text-[13px] font-bold ${textMain}`}>{t}</span> },
-    { title: 'SUBJECT AREA', dataIndex: 'area', render: t => <span className={`text-[12px] ${textMuted}`}>{t}</span> },
-    { title: 'PRIORITY', dataIndex: 'priority', render: p => <Tag color={p === 'URGENT' ? 'error' : p === 'NORMAL' ? 'warning' : 'default'} className="border-0 font-bold text-[10px]">{p}</Tag> },
-    { title: 'DEADLINE', dataIndex: 'due', render: t => <span className="text-[12px] font-bold text-red-500">{t}</span> },
-    { title: 'ACTION', align: 'right', render: (_, r) => <Button onClick={() => navigate(`/reviewer/assignment/${r.key}`)} className="bg-[#7A1849] text-white font-bold text-[12px] rounded-lg border-0 hover:bg-[#5E1136]">Start Review</Button> }
-  ];
+  const getPriorityStyle = (p) => {
+    if (p === 'URGENT') return 'text-[#D93025]';
+    if (p === 'NORMAL') return 'text-[#B36B00]';
+    return 'text-[#4B5563] bg-[#F3F4F6] px-2 py-0.5 rounded';
+  };
 
   return (
     <AdminLayout>
       <div className="max-w-[1300px] mx-auto animate-fade-in-up">
+        
+        {/* Header */}
         <div className="mb-6">
-          <h1 className={`text-2xl font-serif font-bold ${textMain}`}>Pending Reviews</h1>
-          <p className={`text-[13px] text-gray-500`}>Manuscripts currently awaiting your evaluation.</p>
+          <p className={`text-[10px] font-bold tracking-[0.1em] uppercase text-[#7A1849] mb-1.5`}>WORKSPACE / PENDING REVIEW</p>
+          <h1 className={`text-[26px] font-bold tracking-tight ${textMain}`}>Pending Review</h1>
+          <p className={`text-[13px] font-medium mt-1 ${textMuted}`}>Please complete evaluations before due dates. Click on Start Review to load recommendation panel.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          {[
-            { l: 'Total Pending', v: '4', sub: 'Manuscripts awaiting evaluation', tag: 'URGENT', color: 'text-red-500', tagColor: 'bg-red-50 text-red-600' },
-            { l: 'Due Today', v: '1', sub: 'Requires immediate attention', tag: '1', color: 'text-amber-500', tagColor: 'bg-amber-50 text-amber-600' },
-            { l: 'Average Time', v: '14', sub: 'Average days remaining across queue', tag: '14 DAYS', color: 'text-[#7A1849]', tagColor: 'bg-[#FCF7F9] text-[#7A1849]' },
-          ].map((s, i) => (
-            <div key={i} className={`p-5 rounded-xl border shadow-sm flex flex-col justify-between ${bgCard}`}>
-              <div className="flex justify-between items-start mb-2">
-                <p className={`text-[12px] font-bold ${textMuted}`}>{s.l}</p>
-                <span className={`text-[9px] font-bold px-2 py-0.5 rounded uppercase ${s.tagColor}`}>{s.tag}</span>
-              </div>
-              <h3 className={`text-3xl font-bold mb-1 ${s.color}`}>{s.v}</h3>
-              <p className={`text-[10px] ${textMuted}`}>{s.sub}</p>
+        {/* Filter Bar */}
+        <div className={`rounded-xl border mb-6 p-5 ${bgCard}`}>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className={`text-[14px] font-bold ${textMain}`}>Filters</h2>
+            <button className="text-[12px] font-bold text-[#7A1849] hover:underline">Clear all</button>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            
+            {/* Custom Subject Dropdown */}
+            <SubjectDropdown isDarkMode={isDarkMode} />
+
+            {/* Reduced Search Input */}
+            <div className="relative w-[220px]">
+              <SearchOutlined className="absolute left-3 top-2.5 text-gray-400 text-[13px]" />
+              <input 
+                type="text" 
+                placeholder="Search: ID/Title" 
+                className={`w-full pl-9 pr-3 py-2 rounded-lg border text-[12px] font-medium outline-none focus:ring-2 focus:ring-[#7A1849]/20 transition-all ${
+                  isDarkMode 
+                    ? 'bg-[#1A1A1A] border-[#3D3D3D] text-white focus:border-[#7A1849]' 
+                    : 'bg-white border-gray-200 text-gray-600 focus:border-[#7A1849]'
+                }`}
+              />
             </div>
-          ))}
+          </div>
         </div>
 
-        <div className={`rounded-2xl border shadow-sm p-6 ${bgCard}`}>
-           <div className="flex gap-3 mb-6">
-              <div className={`px-3 py-1.5 rounded-lg text-[12px] font-medium border ${isDarkMode ? 'bg-[#2A2A2A] border-[#3D3D3D] text-gray-300' : 'bg-gray-50 border-gray-200 text-gray-500'}`}>Status: All</div>
-              <div className={`px-3 py-1.5 rounded-lg text-[12px] font-medium border ${isDarkMode ? 'bg-[#2A2A2A] border-[#3D3D3D] text-gray-300' : 'bg-gray-50 border-gray-200 text-gray-500'}`}>Priority: All</div>
-              <div className={`px-3 py-1.5 rounded-lg text-[12px] font-medium border ${isDarkMode ? 'bg-[#2A2A2A] border-[#3D3D3D] text-gray-300' : 'bg-gray-50 border-gray-200 text-gray-500'}`}>Subject: All</div>
-           </div>
-           <Table columns={columns} dataSource={data} pagination={false} className={`ora-table ${isDarkMode ? 'dark-table' : ''}`} />
+        {/* Table */}
+        <div className={`rounded-xl border shadow-sm overflow-hidden ${bgCard}`}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-[#7A1849] text-white">
+                  <th className="px-6 py-3.5 text-[10px] font-bold uppercase tracking-wider">ID</th>
+                  <th className="px-6 py-3.5 text-[10px] font-bold uppercase tracking-wider">Title</th>
+                  <th className="px-6 py-3.5 text-[10px] font-bold uppercase tracking-wider">Subject Area</th>
+                  <th className="px-6 py-3.5 text-[10px] font-bold uppercase tracking-wider">Priority</th>
+                  <th className="px-6 py-3.5 text-[10px] font-bold uppercase tracking-wider">Deadline</th>
+                  <th className="px-6 py-3.5 text-[10px] font-bold uppercase tracking-wider text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className={`divide-y ${isDarkMode ? 'divide-[#2D2D2D]' : 'divide-gray-100'}`}>
+                {data.map((row, idx) => (
+                  <tr key={idx} className={`${isDarkMode ? 'hover:bg-[#2A2A2A]' : 'hover:bg-gray-50'} transition-colors`}>
+                    <td className={`px-6 py-5 text-[12px] font-bold ${textMain}`}>{row.id}</td>
+                    <td className={`px-6 py-5 text-[13px] font-bold ${textMain} max-w-[300px]`}>{row.title}</td>
+                    <td className="px-6 py-5">
+                      <span className={`text-[11px] font-bold px-2.5 py-1 rounded-md ${isDarkMode ? 'bg-[#2A2A2A] text-gray-300' : 'bg-[#FCF7F9] text-[#7A1849]'}`}>
+                        {row.area}
+                      </span>
+                    </td>
+                    <td className={`px-6 py-5 text-[11px] font-bold ${getPriorityStyle(row.priority)}`}>
+                      {row.priority}
+                    </td>
+                    <td className={`px-6 py-5 text-[12px] font-medium ${row.priority === 'URGENT' ? 'text-[#D93025]' : textMuted}`}>
+                      {row.due}
+                    </td>
+                    <td className="px-6 py-5 text-right">
+                      <button 
+                        onClick={() => navigate(`/reviewer/assignment/1`)}
+                        className="bg-[#7A1849] text-white px-4 py-1.5 rounded-md text-[11px] font-bold hover:bg-[#5E1136] transition-colors shadow-sm"
+                      >
+                        {row.action}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
+
       </div>
-      <style dangerouslySetInnerHTML={{__html: `.ora-table .ant-table-thead > tr > th { background-color: #7A1849 !important; color: white !important; text-transform: uppercase; font-size: 11px; font-weight: bold; border-bottom: none; padding: 14px 16px; } .dark-table .ant-table { background: transparent; color: #E5E7EB; } .dark-table .ant-table-tbody > tr > td { color: #E5E7EB; border-bottom: 1px solid #2D2D2D; padding: 14px 16px; }`}} />
     </AdminLayout>
   );
 }

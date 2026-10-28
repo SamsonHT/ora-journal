@@ -2,13 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../../layouts/AdminLayout';
 import { useTheme } from '../../context/ThemeContext';
-import { Table, Tag, Button, Input } from 'antd';
-import { 
-  SearchOutlined, 
-  FileTextOutlined, 
-  ClockCircleOutlined, 
-  CheckCircleOutlined // <--- THIS WAS MISSING
-} from '@ant-design/icons';
+import { Table, Input } from 'antd';
+import { SearchOutlined, CalendarOutlined } from '@ant-design/icons';
 
 export default function PendingProofs() {
   const { isDarkMode } = useTheme();
@@ -29,65 +24,137 @@ export default function PendingProofs() {
     item.title.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  // Render Deadline Pill with exact colors from screenshot
+  const renderDeadline = (date) => {
+    const isSep = date.includes('Sep');
+    const isOct = date.includes('Oct');
+    
+    let style = 'bg-gray-50 text-gray-600 border border-gray-100'; 
+    if (isSep) style = 'bg-[#FFF7ED] text-[#C2410C]'; // Light Orange
+    if (isOct) style = 'bg-[#EFF6FF] text-[#2563EB]'; // Light Blue
+
+    return (
+      <span className={`px-2.5 py-1.5 rounded-md text-[11px] font-bold tracking-wide ${style}`}>
+        {date}
+      </span>
+    );
+  };
+
   const columns = [
-    { title: 'MANUSCRIPT TITLE', dataIndex: 'title', key: 'title', render: (text, record) => (
-        <div>
-          <p className={`text-[13px] font-bold ${textMain}`}>{text}</p>
-          <p className={`text-[11px] ${textMuted}`}>{record.journal}</p>
+    { 
+      title: 'MANUSCRIPT TITLE', 
+      dataIndex: 'title', 
+      key: 'title', 
+      render: (text, record) => (
+        <div className="py-1">
+          {/* Exact font weight and color match */}
+          <p className={`text-[13px] font-bold ${textMain} leading-tight`}>{text}</p>
+          <p className={`text-[11.5px] font-medium mt-1 ${textMuted}`}>{record.journal}</p>
         </div>
-    )},
-    { title: 'VERSION', dataIndex: 'version', key: 'version', render: text => <span className={`text-[12px] ${textMuted}`}>{text}</span> },
-    { title: 'DEADLINE', dataIndex: 'deadline', key: 'deadline', render: text => <span className={`text-[12px] font-bold text-amber-600`}>{text}</span> },
-    { title: 'ACTION', key: 'actions', align: 'right', render: (_, record) => (
-        <Button onClick={() => navigate(`/author/proof/${record.key}`)} className="bg-[#7A1849] text-white font-bold text-[12px] rounded-lg border-0 hover:bg-[#5E1136]">View Proof</Button>
-    )}
+      )
+    },
+    { 
+      title: 'VERSION', 
+      dataIndex: 'version', 
+      key: 'version', 
+      render: text => <span className={`text-[12px] font-medium ${textMuted}`}>{text}</span> 
+    },
+    { 
+      title: 'DEADLINE', 
+      dataIndex: 'deadline', 
+      key: 'deadline', 
+      render: text => renderDeadline(text) 
+    },
+    { 
+      title: 'ACTION', 
+      key: 'actions', 
+      align: 'right', 
+      render: (_, record) => (
+        <button 
+          onClick={() => navigate(`/author/proof/${record.key}`)} 
+          className="bg-[#7A1849] text-white font-bold text-[11px] rounded-md px-5 py-1.5 hover:bg-[#5E1136] transition-colors shadow-sm"
+        >
+          View
+        </button>
+      )
+    }
   ];
 
   return (
     <AdminLayout>
       <div className="max-w-[1300px] mx-auto animate-fade-in-up">
-        <div className="mb-8">
-          <p className={`text-[11px] font-bold tracking-widest uppercase mb-1.5 ${textMuted}`}>Workspace / Proofs</p>
-          <h1 className={`text-2xl font-serif font-bold ${textMain}`}>Pending Proofs</h1>
-          <p className={`text-[13px] mt-1 ${textMuted}`}>Review and approve your pre-publication papers here.</p>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          {[
-            { label: 'Pending Approval', value: '3', icon: <FileTextOutlined />, color: 'text-amber-500 bg-amber-50' },
-            { label: 'Approved', value: '12', icon: <CheckCircleOutlined />, color: 'text-green-500 bg-green-50' },
-            { label: 'Action Required', value: '1', icon: <ClockCircleOutlined />, color: 'text-red-500 bg-red-50' },
-          ].map((stat, i) => (
-            <div key={i} className={`p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${bgCard}`}>
-              <div className="flex justify-between items-start mb-2">
-                <p className={`text-[12px] font-bold ${textMuted}`}>{stat.label}</p>
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${stat.color}`}>{stat.icon}</div>
-              </div>
-              <h3 className={`text-2xl font-bold ${textMain}`}>{stat.value}</h3>
-            </div>
-          ))}
-        </div>
-
-        <div className={`rounded-2xl border shadow-sm p-6 ${bgCard}`}>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-             <h2 className={`text-[16px] font-bold ${textMain}`}>Pending Proof Queue</h2>
-             <Input 
-              placeholder="Search by title..." 
-              prefix={<SearchOutlined className="text-gray-400" />}
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              className={`w-full md:w-72 rounded-xl py-2 ${isDarkMode ? 'bg-[#1A1A1A] border-[#3D3D3D] text-white' : 'bg-gray-50 border-gray-200'}`}
-            />
+        
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <div>
+            <p className="text-[10px] font-bold tracking-[0.1em] uppercase text-[#7A1849] mb-1.5">WORKSPACE / PROOFS</p>
+            {/* Removed font-serif to match the image */}
+            <h1 className={`text-[26px] font-bold tracking-tight ${textMain}`}>Pending Proofs</h1>
+            <p className={`text-[13px] font-medium mt-1 ${textMuted}`}>Review and approve your pre-publication papers here.</p>
           </div>
-          <Table columns={columns} dataSource={filteredData} pagination={false} className={`ora-table ${isDarkMode ? 'dark-table' : ''}`} />
+          
+          <div className="flex items-center gap-3">
+            <button className={`flex items-center gap-2 px-4 py-2 border rounded-lg text-[13px] font-medium ${isDarkMode ? 'border-gray-700 text-gray-300 bg-[#1E1E1E]' : 'border-gray-200 text-gray-700 bg-white hover:bg-gray-50'}`}>
+              <CalendarOutlined className="text-gray-400" />
+              Sep 1 – Sep 25, 2026
+            </button>
+            <button 
+              onClick={() => navigate('/author/submit')} 
+              className="bg-[#7A1849] text-white px-5 py-2 rounded-lg text-[13px] font-bold hover:bg-[#5E1136] transition-all shadow-sm"
+            >
+              New Submission
+            </button>
+          </div>
+        </div>
+
+        {/* Table Container */}
+        <div className={`rounded-xl border shadow-sm overflow-hidden ${bgCard}`}>
+          
+          {/* Header & Search Bar */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-5 border-b border-gray-100 dark:border-gray-800">
+             <h2 className={`text-[15px] font-bold tracking-tight ${textMain}`}>Pending Proof Queue</h2>
+             
+             <div className="flex items-center gap-3 w-full md:w-auto">
+                <Input 
+                  placeholder="Search title..." 
+                  prefix={<SearchOutlined className="text-gray-400 text-[13px]" />}
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  className={`w-full md:w-64 rounded-lg py-1.5 text-[12px] ${isDarkMode ? 'bg-[#1A1A1A] border-[#3D3D3D] text-white' : 'bg-white border-gray-200'}`}
+                />
+                <span className={`text-[11px] font-bold px-2.5 py-1 rounded-md whitespace-nowrap ${isDarkMode ? 'bg-gray-800 text-gray-400' : 'bg-gray-50 text-gray-600 border border-gray-200'}`}>
+                  {filteredData.length} Manuscripts
+                </span>
+             </div>
+          </div>
+
+          <Table 
+            columns={columns} 
+            dataSource={filteredData} 
+            pagination={false} 
+            className={`ora-table ${isDarkMode ? 'dark-table' : ''}`} 
+          />
         </div>
       </div>
 
       <style dangerouslySetInnerHTML={{__html: `
-        .ora-table .ant-table-thead > tr > th { background-color: #7A1849 !important; color: white !important; font-weight: 700 !important; font-size: 11px !important; text-transform: uppercase; border-bottom: none; padding: 14px 16px; }
+        /* Exact Table Header Styling */
+        .ora-table .ant-table-thead > tr > th { 
+          background-color: #7A1849 !important; 
+          color: white !important; 
+          font-weight: 600 !important; 
+          font-size: 10px !important; 
+          text-transform: uppercase; 
+          letter-spacing: 0.05em;
+          border-bottom: none; 
+          padding: 12px 16px; 
+        }
+        
+        /* Table Body Styling */
         .dark-table .ant-table { background: transparent; color: #E5E7EB; }
-        .dark-table .ant-table-tbody > tr > td { color: #E5E7EB; border-bottom: 1px solid #2D2D2D; padding: 14px 16px; }
+        .dark-table .ant-table-tbody > tr > td { color: #E5E7EB; border-bottom: 1px solid #2D2D2D; padding: 16px; }
+        .ora-table .ant-table-tbody > tr > td { padding: 16px; border-bottom: 1px solid #F3F4F6; }
+        .ora-table .ant-table-tbody > tr:hover > td { background-color: ${isDarkMode ? '#2A2A2A' : '#FAFAFA'} !important; }
       `}} />
     </AdminLayout>
   );

@@ -11,18 +11,18 @@ export default function DecideManuscript() {
   const bgCard = isDarkMode ? 'bg-[#1E1E1E] border-[#2D2D2D]' : 'bg-white border-gray-200';
   const textMain = isDarkMode ? 'text-gray-100' : 'text-gray-900';
   const textMuted = isDarkMode ? 'text-gray-400' : 'text-gray-500';
-  const inputBg = isDarkMode ? 'bg-[#1A1A1A] border-[#3D3D3D] text-white focus:ring-[#7A1849]' : 'bg-white border-gray-300 text-gray-900 focus:ring-[#7A1849]';
-  const borderCol = isDarkMode ? 'border-[#2D2D2D]' : 'border-gray-200';
+  const inputBg = isDarkMode ? 'bg-[#1A1A1A] border-[#3D3D3D] text-white focus:border-[#7A1849]' : 'bg-white border-gray-200 text-gray-900 focus:border-[#7A1849]';
+  const borderCol = isDarkMode ? 'border-[#2D2D2D]' : 'border-gray-100';
 
   const reviews = [
-    { reviewer: 'Reviewer 1', score: '9/10', rec: 'Accept', recColor: 'text-red-500 bg-red-50', comment: '"Highly thorough analysis. The sample sizes are adequate and conclusion valid."' },
-    { reviewer: 'Reviewer 2', score: '9/10', rec: 'Minor Revision', recColor: 'text-gray-500 bg-gray-100', comment: '"Minor typos in Figure 3 legend. Please clarify thermal boundary conditions."' },
-    { reviewer: 'Reviewer 3', score: '9/10', rec: 'Accept', recColor: 'text-red-500 bg-red-50', comment: '"Strong addition to the state of art. Fits the journal\'s focus perfectly."' },
+    { reviewer: 'Reviewer 1', score: '9/10', rec: 'Accept', recStyle: 'bg-[#FCF7F9] text-[#7A1849]', comment: '"Highly thorough analysis. The sample sizes are adequate and conclusion valid."' },
+    { reviewer: 'Reviewer 2', score: '8/10', rec: 'Minor Revision', recStyle: 'bg-[#F3F4F6] text-[#4B5563]', comment: '"Minor typos in Figure 3 legend. Please clarify thermal boundary conditions."' },
+    { reviewer: 'Reviewer 3', score: '9/10', rec: 'Accept', recStyle: 'bg-[#FCF7F9] text-[#7A1849]', comment: '"Strong addition to the state of art. Fits the journal\'s focus perfectly."' },
   ];
 
   return (
     <AdminLayout>
-      <div className="max-w-[1300px] mx-auto animate-fade-in-up">
+      <div className="max-w-[1400px] mx-auto animate-fade-in-up">
         
         {/* Back Link */}
         <button onClick={() => navigate('/eic/final-decisions')} className="text-[12px] font-bold text-[#7A1849] hover:underline flex items-center gap-1.5 mb-6">
@@ -32,38 +32,38 @@ export default function DecideManuscript() {
         {/* Manuscript Header Card */}
         <div className={`p-6 md:p-8 rounded-xl border shadow-sm mb-6 ${bgCard}`}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-            <p className={`text-[11px] font-bold tracking-widest uppercase text-[#7A1849]`}>Decision Form ORA-2026-077</p>
-            <span className="bg-red-50 text-red-600 text-[11px] font-bold px-3 py-1 rounded-full border border-red-100">Needs Decision</span>
+            <p className={`text-[11px] font-bold tracking-widest uppercase text-[#7A1849]`}>DECISION FORM ORA-2026-077</p>
+            <span className="bg-[#FCF7F9] text-[#7A1849] text-[11px] font-bold px-3 py-1 rounded-md">Needs Decision</span>
           </div>
-          <h1 className={`text-xl md:text-2xl font-serif font-bold mb-2 ${textMain}`}>Reinforcement learning in autonomous flight paths</h1>
-          <p className={`text-[13px] ${textMuted}`}>Authors: Dr. Rachel Green, Liam Neeson et al.</p>
+          <h1 className={`text-[22px] font-bold tracking-tight mb-2 ${textMain}`}>Reinforcement learning in autonomous flight paths</h1>
+          <p className={`text-[13px] font-medium ${textMuted}`}>Authors: Dr. Rachel Green, Liam Neeson et al.</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
-          {/* Left: Peer Reviews Received */}
-          <div className={`lg:col-span-2 p-6 md:p-8 rounded-xl border shadow-sm ${bgCard}`}>
-            <h2 className={`text-[16px] font-bold mb-6 ${textMain}`}>Peer Reviews Received</h2>
+          {/* Left: Peer Reviews Received (8/12 width) */}
+          <div className={`lg:col-span-8 p-6 rounded-xl border shadow-sm ${bgCard}`}>
+            <h2 className={`text-[16px] font-bold tracking-tight mb-6 ${textMain}`}>Peer Reviews Received</h2>
             
             <div className="space-y-4">
               {reviews.map((rev, i) => (
-                <div key={i} className={`p-4 rounded-lg border ${isDarkMode ? 'bg-[#1A1A1A] border-[#2D2D2D]' : 'bg-white border-gray-200'}`}>
+                <div key={i} className={`p-5 rounded-lg border ${isDarkMode ? 'bg-[#1A1A1A] border-[#2D2D2D]' : 'bg-[#FAFAFA] border-gray-100'}`}>
                   <div className="flex justify-between items-center mb-2">
                     <div className="flex items-center gap-3">
                       <h3 className={`text-[13px] font-bold ${textMain}`}>{rev.reviewer}</h3>
-                      <span className={`text-[12px] ${textMuted}`}>Score: {rev.score}</span>
+                      <span className={`text-[12px] font-medium ${textMuted}`}>Score: {rev.score}</span>
                     </div>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${rev.recColor}`}>{rev.rec}</span>
+                    <span className={`text-[11px] font-bold px-2.5 py-1 rounded-md ${rev.recStyle}`}>{rev.rec}</span>
                   </div>
-                  <p className={`text-[13px] italic leading-relaxed ${textMain}`}>{rev.comment}</p>
+                  <p className={`text-[13px] font-medium leading-relaxed ${textMain}`}>{rev.comment}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Right: Final Decision Parameters */}
-          <div className={`p-6 md:p-8 rounded-xl border shadow-sm h-fit ${bgCard}`}>
-            <h2 className={`text-[16px] font-bold mb-6 ${textMain}`}>Final Decision Parameters</h2>
+          {/* Right: Final Decision Parameters (4/12 width) */}
+          <div className={`lg:col-span-4 p-6 rounded-xl border shadow-sm h-fit ${bgCard}`}>
+            <h2 className={`text-[16px] font-bold tracking-tight mb-6 ${textMain}`}>Final Decision Parameters</h2>
             
             <div className="space-y-5">
               <div>
@@ -81,16 +81,16 @@ export default function DecideManuscript() {
 
               <div>
                 <label className={`block text-[12px] font-bold mb-2 ${textMain}`}>Comments & Feedback for Author</label>
-                <textarea rows="4" placeholder="Provide detailed editorial instructions, revisions list, and overall remarks..." className={`w-full p-3 rounded-lg border outline-none ring-offset-2 focus:ring-2 resize-none text-[13px] ${inputBg}`}></textarea>
+                <textarea rows="4" placeholder="Provide detailed editorial instructions, revisions list, and overall remarks..." className={`w-full p-3 rounded-lg border outline-none resize-none text-[13px] transition-colors ${inputBg}`}></textarea>
               </div>
 
               <div>
                 <label className={`block text-[12px] font-bold mb-2 ${textMain}`}>Internal Notes (Editorial Board)</label>
-                <textarea rows="3" placeholder="Internal-only discussion logs..." className={`w-full p-3 rounded-lg border outline-none ring-offset-2 focus:ring-2 resize-none text-[13px] ${inputBg}`}></textarea>
+                <textarea rows="3" placeholder="Internal-only discussion logs..." className={`w-full p-3 rounded-lg border outline-none resize-none text-[13px] transition-colors ${inputBg}`}></textarea>
               </div>
 
               <div className="pt-4 flex gap-3">
-                <button onClick={() => navigate('/eic/final-decisions')} className="flex-1 bg-[#7A1849] text-white py-2.5 rounded-lg font-bold text-[13px] hover:bg-[#5E1136] transition-colors">Submit Decision</button>
+                <button onClick={() => navigate('/eic/final-decisions')} className="flex-1 bg-[#7A1849] text-white py-2.5 rounded-lg font-bold text-[13px] hover:bg-[#5E1136] transition-colors shadow-sm">Submit Decision</button>
                 <button onClick={() => navigate('/eic/final-decisions')} className={`flex-1 py-2.5 rounded-lg font-bold text-[13px] border transition-colors ${isDarkMode ? 'border-gray-700 text-gray-300 hover:bg-gray-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50 bg-white'}`}>Cancel</button>
               </div>
             </div>

@@ -5,7 +5,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { 
   FileTextOutlined, ClockCircleOutlined, CheckCircleOutlined, 
   ArrowRightOutlined, CalendarOutlined, BellOutlined,
-  EyeOutlined, EditOutlined
+  EyeOutlined
 } from '@ant-design/icons';
 
 export default function AuthorDashboard() {
@@ -20,29 +20,31 @@ export default function AuthorDashboard() {
     <AdminLayout>
       <div className="max-w-[1300px] mx-auto animate-fade-in-up">
         
-        {/* ================= SHORT HERO BANNER ================= */}
-        <div className={`relative overflow-hidden rounded-2xl mb-6 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm ${isDarkMode ? 'bg-gradient-to-r from-[#1A1A1A] to-[#2A2A2A] border border-[#3D3D3D]' : 'bg-gradient-to-r from-white to-[#FCF7F9] border border-[#7A1849]/10'}`}>
+        {/* ================= HEADER BANNER ================= */}
+        <div className={`relative overflow-hidden rounded-xl mb-6 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm ${isDarkMode ? 'bg-[#1E1E1E] border border-[#2D2D2D]' : 'bg-white border border-gray-100'}`}>
           
           <div className="relative z-10">
-            <h1 className={`text-2xl font-serif font-bold mb-1 flex items-center gap-2 ${textMain}`}>
-              Good morning, Ava 👋
+            <p className={`text-[10px] font-bold tracking-[0.1em] uppercase text-[#7A1849] mb-1.5`}>WORKSPACE / DASHBOARD</p>
+            {/* Removed font-serif to match screenshot */}
+            <h1 className={`text-[26px] font-bold tracking-tight mb-1 flex items-center gap-2 ${textMain}`}>
+              Good morning, Ava
             </h1>
-            <p className={`text-[13px] ${textMuted}`}>
+            <p className={`text-[13px] font-medium ${textMuted}`}>
               Here's what's happening with your research today.
             </p>
           </div>
           
           <div className="relative z-10 flex gap-3 w-full md:w-auto">
-            <button className={`flex-1 md:flex-none px-4 py-2 rounded-lg text-[12px] font-bold border transition-colors flex items-center justify-center gap-2 ${isDarkMode ? 'border-gray-700 text-gray-300 hover:bg-gray-800' : 'border-gray-300 text-gray-700 hover:bg-white bg-transparent'}`}>
+            <button className={`flex-1 md:flex-none px-4 py-2 rounded-lg text-[12px] font-bold border transition-colors flex items-center justify-center gap-2 ${isDarkMode ? 'border-gray-700 text-gray-300 hover:bg-gray-800' : 'border-gray-200 text-gray-700 hover:bg-gray-50 bg-white'}`}>
               <CalendarOutlined /> Sep 1 – Sep 25
             </button>
-            <Link to="/author/submit" className="flex-1 md:flex-none bg-[#7A1849] text-white px-4 py-2 rounded-lg text-[12px] font-bold hover:bg-[#5E1136] transition-all shadow-md flex items-center justify-center gap-2">
+            <Link to="/author/submit" className="flex-1 md:flex-none bg-[#7A1849] text-white px-4 py-2 rounded-lg text-[12px] font-bold hover:bg-[#5E1136] transition-all shadow-sm flex items-center justify-center gap-2">
               New Submission
             </Link>
           </div>
         </div>
 
-        {/* ================= SHORT STATS CARDS ================= */}
+        {/* ================= STATS CARDS ================= */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {[
             { label: 'Submitted Papers', value: '14', sub: '+2 this month', icon: <FileTextOutlined />, color: 'text-blue-600 bg-blue-50', trendColor: 'text-green-500' },
@@ -55,8 +57,9 @@ export default function AuthorDashboard() {
                   {stat.icon}
                 </div>
                 <div>
-                  <p className={`text-[12px] font-bold ${textMuted}`}>{stat.label}</p>
-                  <h3 className={`text-2xl font-bold ${textMain}`}>{stat.value}</h3>
+                  <p className={`text-[11px] font-bold text-gray-400 uppercase tracking-wider`}>{stat.label}</p>
+                  {/* Changed value to bold sans-serif */}
+                  <h3 className={`text-[24px] font-bold tracking-tight ${textMain}`}>{stat.value}</h3>
                 </div>
               </div>
               <div className="text-right">
@@ -69,11 +72,11 @@ export default function AuthorDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* ================= RECENT ACTIVITY ================= */}
-          <div className={`lg:col-span-2 p-6 rounded-2xl border shadow-sm ${bgCard}`}>
+          <div className={`lg:col-span-2 p-6 rounded-xl border shadow-sm ${bgCard}`}>
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className={`text-[16px] font-bold ${textMain}`}>Recent Activity</h2>
-                <p className={`text-[11px] mt-0.5 ${textMuted}`}>Latest updates on your submitted work.</p>
+                <h2 className={`text-[15px] font-bold tracking-tight ${textMain}`}>Recent Activity</h2>
+                <p className={`text-[11px] font-medium mt-0.5 ${textMuted}`}>Latest updates on your submitted work.</p>
               </div>
               <button className="text-[12px] font-bold text-[#7A1849] hover:underline flex items-center gap-1">View all <ArrowRightOutlined className="text-[10px]" /></button>
             </div>
@@ -102,8 +105,8 @@ export default function AuthorDashboard() {
 
           {/* ================= UPCOMING DEADLINES ================= */}
           <div className="space-y-6">
-            <div className={`p-6 rounded-2xl border shadow-sm ${bgCard}`}>
-              <h2 className={`text-[16px] font-bold mb-5 flex items-center gap-2 ${textMain}`}>
+            <div className={`p-6 rounded-xl border shadow-sm ${bgCard}`}>
+              <h2 className={`text-[15px] font-bold tracking-tight mb-5 flex items-center gap-2 ${textMain}`}>
                 <BellOutlined className="text-[#7A1849]" /> Action Required
               </h2>
               
@@ -131,7 +134,7 @@ export default function AuthorDashboard() {
             </div>
 
             {/* Helpful Tip Card */}
-            <div className={`p-5 rounded-2xl border shadow-sm ${bgCard}`}>
+            <div className={`p-5 rounded-xl border shadow-sm ${bgCard}`}>
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-8 h-8 rounded-full bg-[#FCF7F9] flex items-center justify-center"><EyeOutlined className="text-[#7A1849]" /></div>
                 <h3 className={`text-[13px] font-bold ${textMain}`}>Increase Visibility</h3>

@@ -1,261 +1,262 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import AdminLayout from '../../layouts/AdminLayout';
 import { useTheme } from '../../context/ThemeContext';
-import { 
-  FilePdfOutlined, FileExcelOutlined, FilterOutlined, 
-  BarChartOutlined, TeamOutlined, FileTextOutlined, 
-  DownloadOutlined, CalendarOutlined 
-} from '@ant-design/icons';
+import { DownOutlined, BarChartOutlined, FileExcelOutlined, FilePdfOutlined, CheckOutlined } from '@ant-design/icons';
 
+// ==================== CUSTOM MULTI-SELECT DROPDOWN ====================
+const MultiSelectDropdown = ({ label, options, selected, onChange, isDarkMode }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const toggleOption = (option) => {
+    if (selected.includes(option)) {
+      onChange(selected.filter(item => item !== option));
+    } else {
+      onChange([...selected, option]);
+    }
+  };
+
+  // Determine what text to display
+  const displayText = selected.length === 0 
+    ? `Select ${label.toLowerCase()}...` 
+    : selected.length === 1 
+      ? selected[0] 
+      : `${selected[0]} +${selected.length - 1} more`;
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg border text-[13px] font-medium transition-colors ${
+          isDarkMode 
+            ? 'bg-[#1A1A1A] border-[#3D3D3D] text-gray-300 hover:border-[#7A1849]/50' 
+            : 'bg-white border-gray-200 text-gray-700 hover:border-[#7A1849]/50'
+        } ${isOpen ? 'border-[#7A1849] ring-1 ring-[#7A1849]/20' : ''}`}
+      >
+        <span className="truncate text-left">{displayText}</span>
+        <DownOutlined className={`text-[10px] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      {isOpen && (
+        <div className={`absolute top-full left-0 mt-2 w-full rounded-xl shadow-xl border z-50 overflow-hidden ${
+          isDarkMode ? 'bg-[#1E1E1E] border-[#2D2D2D]' : 'bg-white border-gray-100'
+        }`}>
+          <div className="max-h-60 overflow-y-auto py-1">
+            {options.map((option) => (
+              <button
+                key={option}
+                onClick={() => toggleOption(option)}
+                className={`w-full text-left px-4 py-2.5 text-[12px] font-medium transition-colors flex items-center gap-3 ${
+                  isDarkMode ? 'text-gray-300 hover:bg-[#7A1849]/20 hover:text-white' : 'text-gray-700 hover:bg-[#FCF7F9] hover:text-[#7A1849]'
+                }`}
+              >
+                <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
+                  selected.includes(option) 
+                    ? 'bg-[#7A1849] border-[#7A1849] text-white' 
+                    : isDarkMode ? 'border-gray-600' : 'border-gray-300'
+                }`}>
+                  {selected.includes(option) && <CheckOutlined className="text-[10px]" />}
+                </div>
+                <span className="truncate">{option}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ==================== MAIN PAGE COMPONENT ====================
 export default function EiCReports() {
   const { isDarkMode } = useTheme();
-  const [activeTab, setActiveTab] = useState('Reviewer Reports');
-  const [isGenerated, setIsGenerated] = useState(true);
+
+  // State for filters (using arrays for multi-select)
+  const [dateRange, setDateRange] = useState(['Sep 1 – Sep 25, 2026']);
+  const [status, setStatus] = useState([]);
+  const [subject, setSubject] = useState([]);
+  const [decision, setDecision] = useState([]);
 
   const bgCard = isDarkMode ? 'bg-[#1E1E1E] border-[#2D2D2D]' : 'bg-white border-gray-200';
   const textMain = isDarkMode ? 'text-gray-100' : 'text-gray-900';
   const textMuted = isDarkMode ? 'text-gray-400' : 'text-gray-500';
-  const inputBg = isDarkMode ? 'bg-[#1A1A1A] border-[#3D3D3D] text-white focus:ring-[#7A1849]' : 'bg-gray-50 border-gray-200 text-gray-900 focus:bg-white focus:ring-[#7A1849]';
   const borderCol = isDarkMode ? 'border-[#2D2D2D]' : 'border-gray-100';
 
-  const labelStyle = `block text-[11px] font-bold uppercase tracking-wider mb-2 ${textMuted}`;
+  const tableData = [
+    { area: 'Artificial Intelligence', decisions: 16, accepted: 6, revision: 7, rejected: 3, median: 19 },
+    { area: 'Medical Systems', decisions: 14, accepted: 5, revision: 6, rejected: 3, median: 22 },
+    { area: 'Materials Science', decisions: 11, accepted: 3, revision: 5, rejected: 3, median: 24 },
+    { area: 'Physics', decisions: 9, accepted: 3, revision: 4, rejected: 2, median: 20 },
+    { area: 'Climate Policy', decisions: 7, accepted: 2, revision: 3, rejected: 2, median: 26 },
+    { area: 'Mathematics', decisions: 5, accepted: 1, revision: 2, rejected: 2, median: 18 },
+  ];
+
+  const totals = tableData.reduce((acc, row) => ({
+    decisions: acc.decisions + row.decisions,
+    accepted: acc.accepted + row.accepted,
+  }), { decisions: 0, accepted: 0 });
 
   return (
     <AdminLayout>
       <div className="max-w-[1400px] mx-auto animate-fade-in-up">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
-          <div>
-            <p className={`text-[11px] font-bold tracking-widest uppercase mb-1.5 ${textMuted}`}>Workspace / Analytics</p>
-            <h1 className={`text-3xl font-serif font-bold ${textMain}`}>Journal Reports</h1>
-            <p className={`text-[14px] mt-1.5 ${textMuted}`}>Generate detailed reports on reviewer performance and manuscript pipelines.</p>
-          </div>
+        <div className="mb-8">
+          <p className={`text-[10px] font-bold tracking-[0.1em] uppercase mb-1.5 ${textMuted}`}>WORKSPACE / REPORT / EDITORIAL</p>
+          <h1 className={`text-[26px] font-bold tracking-tight ${textMain}`}>Report</h1>
+          <p className={`text-[13px] font-medium mt-1 ${textMuted}`}>Understand editorial outcomes, decision speed and reviewer performance.</p>
         </div>
 
-        {/* Modern Tabs */}
-        <div className={`flex gap-6 border-b mb-6 ${borderCol}`}>
-          {[
-            { id: 'Reviewer Reports', icon: <TeamOutlined /> },
-            { id: 'Manuscript Reports', icon: <FileTextOutlined /> },
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 pb-3 text-[14px] font-bold border-b-2 transition-colors ${
-                activeTab === tab.id 
-                  ? 'text-[#7A1849] border-[#7A1849]' 
-                  : `text-gray-500 border-transparent hover:text-gray-700 dark:hover:text-gray-300`
-              }`}
+        {/* Filter Bar */}
+        <div className={`rounded-xl border shadow-sm mb-6 p-6 ${bgCard}`}>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className={`text-[15px] font-bold tracking-tight ${textMain}`}>Report filters</h2>
+            <button 
+              onClick={() => { setDateRange(['Sep 1 – Sep 25, 2026']); setStatus([]); setSubject([]); setDecision([]); }}
+              className="text-[12px] font-bold text-[#7A1849] hover:underline"
             >
-              {tab.icon} {tab.id}
+              Reset filters
             </button>
-          ))}
-        </div>
+          </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          
-          {/* ================= LEFT PANEL: FILTERS ================= */}
-          <div className={`w-full lg:w-[320px] flex-shrink-0 p-6 rounded-2xl border shadow-sm h-fit sticky top-24 ${bgCard}`}>
-            <h2 className={`text-[15px] font-bold mb-5 flex items-center gap-2 ${textMain}`}>
-              <FilterOutlined className="text-[#7A1849]" /> Report Filters
-            </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             
-            <div className="space-y-4">
-              
-              {/* Common Filter: Subject Area */}
-              <div>
-                <label className={labelStyle}>Subject Area</label>
-                <select className={`w-full px-3 py-2.5 rounded-xl border outline-none text-[13px] ${inputBg}`}>
-                  <option>All Subject Areas</option>
-                  <option>Computer Science</option>
-                  <option>Medical Imaging</option>
-                  <option>Renewable Energy</option>
-                </select>
-              </div>
+            {/* Date Range */}
+            <div>
+              <label className={`block text-[11px] font-bold mb-2 ${textMain}`}>Date range</label>
+              <MultiSelectDropdown 
+                label="Date range"
+                options={['Sep 1 – Sep 25, 2026', 'Oct 1 – Oct 31, 2026', 'Nov 1 – Nov 30, 2026']}
+                selected={dateRange}
+                onChange={setDateRange}
+                isDarkMode={isDarkMode}
+              />
+            </div>
 
-              {/* Common Filter: Status */}
-              <div>
-                <label className={labelStyle}>Status</label>
-                <select className={`w-full px-3 py-2.5 rounded-xl border outline-none text-[13px] ${inputBg}`}>
-                  <option>All Statuses</option>
-                  <option>Under Review</option>
-                  <option>Accepted</option>
-                  <option>Rejected</option>
-                </select>
-              </div>
+            {/* Manuscript Status */}
+            <div>
+              <label className={`block text-[11px] font-bold mb-2 ${textMain}`}>Manuscript status</label>
+              <MultiSelectDropdown 
+                label="Status"
+                options={['In Review', 'Accepted', 'Rejected', 'Desk Rejected']}
+                selected={status}
+                onChange={setStatus}
+                isDarkMode={isDarkMode}
+              />
+            </div>
 
-              {/* Conditional Filter: Manuscript Type */}
-              {activeTab === 'Manuscript Reports' && (
-                <div>
-                  <label className={labelStyle}>Manuscript Type</label>
-                  <select className={`w-full px-3 py-2.5 rounded-xl border outline-none text-[13px] ${inputBg}`}>
-                    <option>All Types</option>
-                    <option>Original Research</option>
-                    <option>Review Article</option>
-                    <option>Case Study</option>
-                  </select>
-                </div>
-              )}
+            {/* Categories / Subject */}
+            <div>
+              <label className={`block text-[11px] font-bold mb-2 ${textMain}`}>Categories / subject</label>
+              <MultiSelectDropdown 
+                label="Subject"
+                options={['Computer Science', 'Medical Systems', 'Physics', 'Materials Science', 'Climate Policy']}
+                selected={subject}
+                onChange={setSubject}
+                isDarkMode={isDarkMode}
+              />
+            </div>
 
-              {/* Common Filter: Date Range */}
-              <div>
-                <label className={labelStyle}>Date Range</label>
-                <div className="space-y-2">
-                  <div className="relative">
-                    <CalendarOutlined className="absolute left-3 top-3 text-gray-400 text-[12px]" />
-                    <input type="date" className={`w-full pl-8 pr-3 py-2.5 rounded-xl border outline-none text-[12px] ${inputBg}`} />
-                  </div>
-                  <div className="relative">
-                    <CalendarOutlined className="absolute left-3 top-3 text-gray-400 text-[12px]" />
-                    <input type="date" className={`w-full pl-8 pr-3 py-2.5 rounded-xl border outline-none text-[12px] ${inputBg}`} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
-                <button onClick={() => setIsGenerated(true)} className="w-full bg-[#7A1849] text-white py-3 rounded-xl font-bold text-[13px] hover:bg-[#5E1136] transition-all shadow-md">
-                  Generate Report
-                </button>
-              </div>
+            {/* Decision */}
+            <div>
+              <label className={`block text-[11px] font-bold mb-2 ${textMain}`}>Decision</label>
+              <MultiSelectDropdown 
+                label="Decision"
+                options={['Accept', 'Minor Revision', 'Major Revision', 'Reject']}
+                selected={decision}
+                onChange={setDecision}
+                isDarkMode={isDarkMode}
+              />
             </div>
           </div>
 
-          {/* ================= RIGHT PANEL: REPORT PREVIEW ================= */}
-          <div className="flex-1">
-            {isGenerated ? (
-              <div className={`rounded-2xl border shadow-lg overflow-hidden bg-white ${isDarkMode ? 'dark-report' : ''}`}>
-                
-                {/* Report Header with Logo */}
-                <div className="p-8 border-b border-gray-200 bg-gray-50 flex justify-between items-start">
-                  <div className="flex items-center gap-4">
-                    <img src="/oralogo.png" alt="ORA" className="h-12 w-auto" onError={(e) => e.target.style.display = 'none'} />
-                    <div>
-                      <h2 className="text-xl font-serif font-bold text-gray-900">Oromo Research Association</h2>
-                      <p className="text-[11px] font-bold text-[#7A1849] uppercase tracking-wider">
-                        {activeTab === 'Reviewer Reports' ? 'Reviewer Performance Analytics' : 'Manuscript Pipeline Report'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right text-[12px] text-gray-500">
-                    <p>Generated: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                    <p>Period: Sep 01 - Sep 30, 2026</p>
-                  </div>
-                </div>
+          {/* Removed the line here (border-t) as requested */}
+          <div className="flex justify-between items-center">
+            <p className={`text-[11px] font-medium ${textMuted}`}>Date range is inclusive · All times in UTC</p>
+            <button className="bg-[#7A1849] text-white px-5 py-2.5 rounded-lg font-bold text-[13px] hover:bg-[#5E1136] transition-colors shadow-sm flex items-center gap-2">
+              <BarChartOutlined /> Generate Report
+            </button>
+          </div>
+        </div>
 
-                {/* Report Summary Stats */}
-                <div className="p-8 grid grid-cols-3 gap-4 border-b border-gray-100">
-                  {activeTab === 'Reviewer Reports' ? (
-                    <>
-                      <div className="text-center">
-                        <p className="text-[10px] font-bold text-gray-500 uppercase">Active Reviewers</p>
-                        <p className="text-2xl font-bold text-[#7A1849]">42</p>
-                      </div>
-                      <div className="text-center border-x border-gray-200">
-                        <p className="text-[10px] font-bold text-gray-500 uppercase">Avg. Review Time</p>
-                        <p className="text-2xl font-bold text-gray-800">14 Days</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-[10px] font-bold text-gray-500 uppercase">Completion Rate</p>
-                        <p className="text-2xl font-bold text-green-600">92%</p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="text-center">
-                        <p className="text-[10px] font-bold text-gray-500 uppercase">Total Submissions</p>
-                        <p className="text-2xl font-bold text-[#7A1849]">82</p>
-                      </div>
-                      <div className="text-center border-x border-gray-200">
-                        <p className="text-[10px] font-bold text-gray-500 uppercase">Decision Time</p>
-                        <p className="text-2xl font-bold text-gray-800">21 Days</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-[10px] font-bold text-gray-500 uppercase">Acceptance Rate</p>
-                        <p className="text-2xl font-bold text-green-600">42%</p>
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* Data Table */}
-                <div className="p-8">
-                  <h3 className="text-[14px] font-bold text-gray-800 mb-4">Detailed Breakdown</h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="border-b-2 border-gray-200 text-gray-500 uppercase text-[10px] tracking-wider">
-                          {activeTab === 'Reviewer Reports' ? (
-                            <>
-                              <th className="py-3 px-4">Reviewer Name</th>
-                              <th className="py-3 px-4">Assignments</th>
-                              <th className="py-3 px-4">Avg. Score Given</th>
-                              <th className="py-3 px-4 text-right">Completion Rate</th>
-                            </>
-                          ) : (
-                            <>
-                              <th className="py-3 px-4">Manuscript ID</th>
-                              <th className="py-3 px-4">Subject Area</th>
-                              <th className="py-3 px-4">Status</th>
-                              <th className="py-3 px-4 text-right">Time in Pipeline</th>
-                            </>
-                          )}
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100 text-gray-800 text-[12px]">
-                        {activeTab === 'Reviewer Reports' ? (
-                          <>
-                            <tr className="hover:bg-gray-50"><td className="py-3 px-4 font-bold">Dr. Rachel Green</td><td className="py-3 px-4">12</td><td className="py-3 px-4">8.5/10</td><td className="py-3 px-4 text-right text-green-600 font-bold">95%</td></tr>
-                            <tr className="hover:bg-gray-50"><td className="py-3 px-4 font-bold">Prof. Alan Turing</td><td className="py-3 px-4">8</td><td className="py-3 px-4">7.2/10</td><td className="py-3 px-4 text-right text-amber-600 font-bold">80%</td></tr>
-                            <tr className="hover:bg-gray-50"><td className="py-3 px-4 font-bold">Dr. Sarah Chen</td><td className="py-3 px-4">15</td><td className="py-3 px-4">9.1/10</td><td className="py-3 px-4 text-right text-green-600 font-bold">100%</td></tr>
-                          </>
-                        ) : (
-                          <>
-                            <tr className="hover:bg-gray-50"><td className="py-3 px-4 font-mono font-bold">MS-2026-010</td><td className="py-3 px-4">Computer Science</td><td className="py-3 px-4 text-green-600 font-bold">Accepted</td><td className="py-3 px-4 text-right">18 Days</td></tr>
-                            <tr className="hover:bg-gray-50"><td className="py-3 px-4 font-mono font-bold">MS-2026-012</td><td className="py-3 px-4">Medical Imaging</td><td className="py-3 px-4 text-red-600 font-bold">Rejected</td><td className="py-3 px-4 text-right">22 Days</td></tr>
-                            <tr className="hover:bg-gray-50"><td className="py-3 px-4 font-mono font-bold">MS-2026-014</td><td className="py-3 px-4">Renewable Energy</td><td className="py-3 px-4 text-amber-600 font-bold">Under Review</td><td className="py-3 px-4 text-right">12 Days</td></tr>
-                          </>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Footer Actions */}
-                <div className="p-6 bg-gray-50 border-t border-gray-200 flex justify-between items-center">
-                  <p className="text-[11px] text-gray-500 font-medium">Generated by Ava Morgan (Editor-in-Chief)</p>
-                  <div className="flex gap-3">
-                    <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-[12px] font-bold text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors shadow-sm">
-                      <FileExcelOutlined className="text-green-600" /> Export Excel
-                    </button>
-                    <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-[12px] font-bold text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors shadow-sm">
-                      <FilePdfOutlined className="text-red-500" /> Download PDF
-                    </button>
-                  </div>
-                </div>
+        {/* Report Table Section */}
+        <div className={`rounded-xl border shadow-sm overflow-hidden ${bgCard}`}>
+          
+          {/* Table Header Info */}
+          <div className="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-100 dark:border-gray-800">
+            <div className="flex items-center gap-4">
+              <img src="/oralogo.png" alt="ORA" className="h-8 w-auto" onError={(e) => e.target.style.display = 'none'} />
+              <div>
+                <h2 className={`text-[16px] font-bold tracking-tight ${textMain}`}>Editorial performance by subject</h2>
+                <p className={`text-[12px] font-medium mt-0.5 ${textMuted}`}>Sep 1 – Sep 25, 2026 · All reviewers · All decisions</p>
               </div>
-            ) : (
-              <div className={`h-full min-h-[500px] flex flex-col items-center justify-center rounded-2xl border-2 border-dashed ${isDarkMode ? 'border-gray-700 bg-[#1A1A1A]' : 'border-gray-300 bg-gray-50'}`}>
-                <BarChartOutlined className={`text-6xl mb-4 ${isDarkMode ? 'text-gray-600' : 'text-gray-300'}`} />
-                <p className={`text-[16px] font-bold ${textMain}`}>No Report Generated</p>
-                <p className={`text-[13px] mt-1 ${textMuted}`}>Select your filters on the left and click Generate.</p>
-              </div>
-            )}
+            </div>
+            <div className="flex gap-2">
+              <button className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-[12px] font-bold transition-colors ${isDarkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-800' : 'border-gray-200 text-gray-700 bg-white hover:bg-gray-50'}`}>
+                <FileExcelOutlined className="text-green-600" /> CSV
+              </button>
+              <button className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-[12px] font-bold transition-colors ${isDarkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-800' : 'border-gray-200 text-gray-700 bg-white hover:bg-gray-50'}`}>
+                <FilePdfOutlined className="text-red-500" /> PDF
+              </button>
+            </div>
+          </div>
+
+          {/* Data Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className={`text-[10px] font-bold uppercase tracking-wider ${isDarkMode ? 'bg-[#2A2A2A] text-gray-300' : 'bg-[#FAFAFA] text-gray-500'}`}>
+                  <th className="px-6 py-3.5 font-bold">Subject area</th>
+                  <th className="px-6 py-3.5 font-bold">Decisions</th>
+                  <th className="px-6 py-3.5 font-bold">Accepted</th>
+                  <th className="px-6 py-3.5 font-bold">Revision</th>
+                  <th className="px-6 py-3.5 font-bold">Rejected</th>
+                  <th className="px-6 py-3.5 font-bold text-right">Median days</th>
+                </tr>
+              </thead>
+              <tbody className={`divide-y ${isDarkMode ? 'divide-[#2D2D2D]' : 'divide-gray-100'}`}>
+                {tableData.map((row, idx) => (
+                  <tr key={idx} className={`${isDarkMode ? 'hover:bg-[#2A2A2A]' : 'hover:bg-gray-50'} transition-colors`}>
+                    <td className={`px-6 py-4 text-[13px] font-bold ${textMain}`}>{row.area}</td>
+                    <td className={`px-6 py-4 text-[13px] font-medium ${textMain}`}>{row.decisions}</td>
+                    <td className={`px-6 py-4 text-[13px] font-medium ${textMain}`}>{row.accepted}</td>
+                    <td className={`px-6 py-4 text-[13px] font-medium ${textMain}`}>{row.revision}</td>
+                    <td className={`px-6 py-4 text-[13px] font-medium ${textMain}`}>{row.rejected}</td>
+                    <td className={`px-6 py-4 text-[13px] font-medium text-right ${textMain}`}>{row.median}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Footer Stats */}
+          <div className={`px-6 py-4 border-t flex justify-between items-center ${borderCol}`}>
+            <p className={`text-[12px] font-medium ${textMuted}`}>
+              {tableData.length} subject areas · {totals.decisions} decisions · {totals.accepted} accepted
+            </p>
+            <p className={`text-[12px] font-medium ${textMuted}`}>
+              Page 1 of 1
+            </p>
           </div>
 
         </div>
-      </div>
 
-      {/* CSS to ensure the report stays white for printing/exporting even in dark mode */}
-      <style dangerouslySetInnerHTML={{__html: `
-        .dark-report { background-color: #ffffff !important; }
-        .dark-report .bg-gray-50 { background-color: #F9FAFB !important; }
-        .dark-report .text-gray-900 { color: #111827 !important; }
-        .dark-report .text-gray-800 { color: #1F2937 !important; }
-        .dark-report .text-gray-500 { color: #6B7280 !important; }
-        .dark-report .border-gray-200 { border-color: #E5E7EB !important; }
-        .dark-report .border-gray-100 { border-color: #F3F4F6 !important; }
-      `}} />
+        {/* Method Note */}
+        <p className={`text-[11px] font-medium mt-4 ${textMuted}`}>
+          Methodology: acceptance rate is accepted manuscripts divided by all decisions issued, including revisions and desk rejections. On-time rate covers completed reviews due within the selected period.
+        </p>
+
+      </div>
     </AdminLayout>
   );
 }

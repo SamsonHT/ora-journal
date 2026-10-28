@@ -3,15 +3,15 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 
 // ================= GLOBAL HOME & MODULES =================
-import HomeLanding from './pages/home/HomeLanding'; // ORA Global Home
+import HomeLanding from './pages/home/HomeLanding';
 import EbookLanding from './pages/ebook/public/EbookLanding';
 import LibraryLanding from './pages/library/public/LibraryLanding';
 import WikiLanding from './pages/wiki/public/WikiLanding';
 import RepoLanding from './pages/repository/public/RepoLanding';
 import NetworkLogin from './pages/network/public/NetworkLogin';
 
-// ================= JOURNAL PUBLIC PAGES (Root) =================
-import LandingPage from './pages/LandingPage'; // Journal Home
+// ================= JOURNAL PUBLIC PAGES =================
+import LandingPage from './pages/LandingPage';
 import JournalsPage from './pages/JournalsPage';
 import AboutPage from './pages/AboutPage';
 import Login from './pages/Login';
@@ -62,15 +62,19 @@ import ViewInvitation from './pages/reviewer/ViewInvitation';
 import RecommendationForm from './pages/reviewer/RecommendationForm';
 import ReviewerSettings from './pages/reviewer/Settings';
 
+// ================= MANAGING EDITOR =================
 import MEDashboard from './pages/managing-editor/Dashboard';
 import PendingProduction from './pages/managing-editor/PendingProduction';
 import ProductionDetail from './pages/managing-editor/ProductionDetail';
+import PublishPage from './pages/managing-editor/PublishPage';
 import PublishedManuscripts from './pages/managing-editor/Published';
 import MEIssues from './pages/managing-editor/Issues';
 import MEReports from './pages/managing-editor/Reports';
 import MESettings from './pages/managing-editor/Settings';
 import ViewPublished from './pages/managing-editor/ViewPublished';
 import AddIssue from './pages/managing-editor/AddIssue';
+import ViewIssue from './pages/managing-editor/ViewIssue';
+import EditIssue from './pages/managing-editor/EditIssue';
 
 // ================= EBOOK PUBLIC PAGES =================
 import EbookCatalogue from './pages/ebook/public/Catalogue';
@@ -99,7 +103,7 @@ function App() {
           {/* ================= ORA GLOBAL HOME ================= */}
           <Route path="/" element={<HomeLanding />} />
 
-          {/* ================= JOURNAL PUBLIC PAGES (Root) ================= */}
+          {/* ================= JOURNAL PUBLIC PAGES ================= */}
           <Route path="/journal" element={<LandingPage />} />
           <Route path="/journals" element={<JournalsPage />} />
           <Route path="/about" element={<AboutPage />} />
@@ -111,16 +115,14 @@ function App() {
           <Route path="/editorial" element={<EditorialBoard />} />
           <Route path="/contact" element={<ContactUs />} />
 
-          {/* ================= OTHER MODULES (Public Landings) ================= */}
+          {/* ================= OTHER MODULES ================= */}
           <Route path="/ebook" element={<EbookLanding />} />
           <Route path="/library" element={<LibraryLanding />} />
           <Route path="/wiki" element={<WikiLanding />} />
           <Route path="/repository" element={<RepoLanding />} />
           <Route path="/network" element={<NetworkLogin />} />
 
-          {/* ==================================================================== */}
           {/* ================= EBOOK PUBLIC PAGES ================= */}
-          {/* ==================================================================== */}
           <Route path="/ebook/catalogue" element={<EbookCatalogue />} />
           <Route path="/ebook/login" element={<EbookLogin />} />
           <Route path="/ebook/register" element={<EbookRegister />} />
@@ -129,9 +131,7 @@ function App() {
           <Route path="/ebook/editorial" element={<EbookEditorialTeam />} />
           <Route path="/ebook/contact" element={<EbookContact />} />
 
-          {/* ==================================================================== */}
           {/* ================= EBOOK AUTHOR PORTAL ================= */}
-          {/* ==================================================================== */}
           <Route path="/ebook/author/dashboard" element={<EbookAuthorDashboard />} />
           <Route path="/ebook/author/my-books" element={<EbookAuthorMyBooks />} />
           <Route path="/ebook/author/submit" element={<EbookAuthorSubmitBook />} />
@@ -140,11 +140,7 @@ function App() {
           <Route path="/ebook/author/revisions" element={<EbookAuthorRevisions />} />
           <Route path="/ebook/author/settings" element={<EbookAuthorSettings />} />
 
-          {/* ==================================================================== */}
-          {/* ================= JOURNAL INTERNAL ROLES (Root) ================= */}
-          {/* ==================================================================== */}
-          
-          {/* Admin */}
+          {/* ================= JOURNAL ADMIN ================= */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<Users />} />
           <Route path="/admin/users/add" element={<AddUser />} />
@@ -158,7 +154,7 @@ function App() {
           <Route path="/admin/messages" element={<Messages />} />
           <Route path="/admin/messages/:id" element={<MessageDetail />} />
 
-          {/* EIC */}
+          {/* ================= JOURNAL EIC ================= */}
           <Route path="/eic/dashboard" element={<EiCDashboard />} />
           <Route path="/eic/screening" element={<EiCScreening />} />
           <Route path="/eic/screen/:id" element={<ScreenManuscript />} />
@@ -169,7 +165,7 @@ function App() {
           <Route path="/eic/reports" element={<EiCReports />} />
           <Route path="/eic/settings" element={<EiCSettings />} />
 
-          {/* Reviewer */}
+          {/* ================= JOURNAL REVIEWER ================= */}
           <Route path="/reviewer/dashboard" element={<ReviewerDashboard />} />
           <Route path="/reviewer/assignments" element={<MyAssignments />} />
           <Route path="/reviewer/pending" element={<PendingReview />} />
@@ -178,18 +174,21 @@ function App() {
           <Route path="/reviewer/recommendation" element={<RecommendationForm />} />
           <Route path="/reviewer/settings" element={<ReviewerSettings />} />
 
-          {/* Managing Editor */}
+          {/* ================= MANAGING EDITOR ================= */}
           <Route path="/managing-editor/dashboard" element={<MEDashboard />} />
           <Route path="/managing-editor/pending-production" element={<PendingProduction />} />
           <Route path="/managing-editor/production/:id" element={<ProductionDetail />} />
+          <Route path="/managing-editor/publish/:id" element={<PublishPage />} />
           <Route path="/managing-editor/published" element={<PublishedManuscripts />} />
           <Route path="/managing-editor/published/:id" element={<ViewPublished />} />
           <Route path="/managing-editor/issues" element={<MEIssues />} />
           <Route path="/managing-editor/reports" element={<MEReports />} />
           <Route path="/managing-editor/settings" element={<MESettings />} />
           <Route path="/managing-editor/issues/add" element={<AddIssue />} /> 
+          <Route path="/managing-editor/issues/view/:id" element={<ViewIssue />} />
+          <Route path="/managing-editor/issues/edit/:id" element={<EditIssue />} />
 
-          {/* Journal Author */}
+          {/* ================= JOURNAL AUTHOR ================= */}
           <Route path="/author/dashboard" element={<AuthorDashboard />} />
           <Route path="/author/submissions" element={<MySubmissions />} />
           <Route path="/author/submit" element={<SubmitManuscript />} />
