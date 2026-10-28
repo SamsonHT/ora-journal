@@ -22,6 +22,10 @@ import ReviewerGuide from './pages/ReviewerGuide';
 import EditorialBoard from './pages/EditorialBoard';
 import ContactUs from './pages/ContactUs';
 
+// NEW: Import CurrentIssue and ViewIssueDetail from the root of pages
+import CurrentIssue from './pages/CurrentIssue';
+import ViewIssueDetail from './pages/ViewIssueDetail';
+
 // ================= JOURNAL INTERNAL ROLES =================
 import AdminDashboard from './pages/admin/Dashboard';
 import Users from './pages/admin/Users';
@@ -105,7 +109,6 @@ function App() {
 
           {/* ================= JOURNAL PUBLIC PAGES ================= */}
           <Route path="/journal" element={<LandingPage />} />
-          <Route path="/journals" element={<JournalsPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -114,6 +117,11 @@ function App() {
           <Route path="/reviewer-guide" element={<ReviewerGuide />} />
           <Route path="/editorial" element={<EditorialBoard />} />
           <Route path="/contact" element={<ContactUs />} />
+
+          {/* Journal & Issue Views */}
+          <Route path="/journals" element={<JournalsPage />} />
+          <Route path="/issues/current" element={<CurrentIssue />} />
+          <Route path="/issues/:id" element={<ViewIssueDetail />} />
 
           {/* ================= OTHER MODULES ================= */}
           <Route path="/ebook" element={<EbookLanding />} />
