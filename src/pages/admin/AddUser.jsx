@@ -22,12 +22,12 @@ export default function AddUser() {
         {/* Header */}
         <div className="flex justify-between items-end mb-8">
           <div>
-            <p className={`text-[11px] font-bold tracking-widest uppercase mb-1.5 ${textMuted}`}>Workspace / Users / Add</p>
-            <h1 className={`text-3xl font-serif font-bold flex items-center gap-3 ${textMain}`}>
+            <p className={`text-[10px] font-bold tracking-[0.1em] uppercase mb-1.5 ${textMuted}`}>Workspace / Users / Add</p>
+            <h1 className={`text-[26px] font-bold tracking-tight flex items-center gap-3 ${textMain}`}>
               Create New User
-              <span className="text-[10px] bg-[#FCF7F9] text-[#7A1849] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider border border-[#7A1849]/20">Admin Action</span>
+              <span className="text-[9px] bg-[#FCF7F9] text-[#7A1849] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider border border-[#7A1849]/20">Admin Action</span>
             </h1>
-            <p className={`text-[14px] mt-1.5 ${textMuted}`}>Create a journal account and assign role-based access securely.</p>
+            <p className={`text-[13px] font-medium mt-1 ${textMuted}`}>Create a journal account and assign role-based access securely.</p>
           </div>
           <Link to="/admin/users" className={`px-5 py-2.5 rounded-xl text-[13px] font-bold border transition-all flex items-center gap-2 ${isDarkMode ? 'border-gray-700 text-gray-300 hover:bg-gray-800' : 'border-gray-300 text-gray-700 hover:bg-gray-50 bg-white'}`}>
             <ArrowLeftOutlined /> Back to Users
