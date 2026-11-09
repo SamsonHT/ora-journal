@@ -1,3 +1,4 @@
+// src/pages/ebook/public/Login.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import EbookHeader from '../../../components/ebook/EbookHeader';
@@ -16,18 +17,23 @@ export default function Login() {
   };
 
   const handleDemoLogin = (role) => {
-    // Route based on the demo role clicked
-    if (role === 'Author') {
-      navigate('/ebook/author/dashboard');
-    } else if (role === 'Editorial') {
-      // ✅ FIXED: Now routes to the Editorial Dashboard we just built
-      navigate('/ebook/editorial/dashboard');
-    } else if (role === 'Content Manager') {
-      alert('Content Manager Portal is not built yet. Coming soon!');
-      // navigate('/ebook/manager/dashboard');
-    } else if (role === 'Admin') {
-      alert('Admin Portal is not built yet. Coming soon!');
-      // navigate('/ebook/admin/dashboard');
+    switch (role) {
+      case 'Author':
+        navigate('/ebook/author/dashboard');
+        break;
+      case 'Editorial':
+        navigate('/ebook/editorial/dashboard');
+        break;
+      case 'Content Manager':
+        // ✅ Content Manager portal is now live
+        navigate('/content-manager/production');
+        break;
+      case 'Admin':
+        alert('Admin Portal is not built yet. Coming soon!');
+        // navigate('/ebook/admin/dashboard');
+        break;
+      default:
+        break;
     }
   };
 

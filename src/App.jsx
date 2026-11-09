@@ -109,6 +109,21 @@ import ReviewerResponses from './pages/ebook/Editorial/ReviewerResponses';
 import FinalDecisionList from './pages/ebook/Editorial/FinalDecisionList'; // The Reviewed Books list
 import DecisionWorkspace from './pages/ebook/Editorial/DecisionWorkspace'; // The detailed decision screen
 import EditorialSettings from './pages/ebook/Editorial/EditorialSettings';
+
+/* ============================================================
+   CONTENT MANAGER PAGES
+   ============================================================ */
+import ProductionOverview from './pages/ebook/content-manager/ProductionOverview';
+import AllBooks from './pages/ebook/content-manager/AllBooks';
+import BookDetail from './pages/ebook/content-manager/BookDetail';
+import Typesetting from './pages/ebook/content-manager/Typesetting';
+import PrepareProof from './pages/ebook/content-manager/PrepareProof';
+import FinalProofing from './pages/ebook/content-manager/FinalProofing';
+import IsbnManagement from './pages/ebook/content-manager/IsbnManagement';
+import CreateIsbn from './pages/ebook/content-manager/CreateIsbn';
+import ReadyToPublish from './pages/ebook/content-manager/ReadyToPublish';
+import OverviewReport from './pages/ebook/content-manager/OverviewReport';
+import ManagerSettings from './pages/ebook/content-manager/ManagerSettings';
 function App() {
   return (
     <ThemeProvider>
@@ -175,6 +190,42 @@ function App() {
         <Route path="/ebook/editorial/decision-workspace" element={<DecisionWorkspace />} />
         <Route path="/ebook/editorial/settings" element={<EditorialSettings />} />
          
+
+         {/* ============ CONTENT MANAGER PORTAL ============ */}
+        {/* 1. Production overview (dashboard) */}
+        <Route path="/content-manager/production" element={<ProductionOverview />} />
+
+        {/* 2. All books (catalog list) */}
+        <Route path="/content-manager/books" element={<AllBooks />} />
+
+        {/* 3. Book detail (dynamic route by id) */}
+        <Route path="/content-manager/books/:id" element={<BookDetail />} />
+
+        {/* 4. Pre-press & typeset (queue) */}
+        <Route path="/content-manager/typeset" element={<Typesetting />} />
+
+        {/* 5. Prepare & typeset (form) */}
+        <Route path="/content-manager/typeset/prepare" element={<PrepareProof />} />
+
+        {/* 6. Final proofing (review) */}
+        <Route path="/content-manager/typeset/proof" element={<FinalProofing />} />
+
+        {/* 7. ISBN management (list + stats) */}
+        <Route path="/content-manager/isbn" element={<IsbnManagement />} />
+
+        {/* 8. Create / assign ISBN (form) */}
+        <Route path="/content-manager/isbn/create" element={<CreateIsbn />} />
+
+        {/* 9. Ready to publish (final gate) */}
+        <Route path="/content-manager/publish" element={<ReadyToPublish />} />
+
+        {/* 10. Overview report (analytics) */}
+        <Route path="/content-manager/reports" element={<OverviewReport />} />
+
+        {/* 11. Settings (manager preferences) */}
+        <Route path="/content-manager/settings" element={<ManagerSettings />} />
+
+
           {/* ================= JOURNAL ADMIN ================= */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<Users />} />
