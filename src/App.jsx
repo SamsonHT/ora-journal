@@ -98,6 +98,17 @@ import EbookAuthorPublishingFee from './pages/ebook/author/PublishingFee';
 import EbookAuthorRevisions from './pages/ebook/author/Revisions';
 import EbookAuthorSettings from './pages/ebook/author/Settings';
 
+// --- Editorial Pages ---
+import EditorialDashboard from './pages/ebook/Editorial/EditorialDashboard';
+import AllBooksList from './pages/ebook/Editorial/AllBooksList';
+import BookDetails from './pages/ebook/Editorial/BookDetails';
+import InitialScreening from './pages/ebook/Editorial/InitialScreening';
+import AssignReviewer from './pages/ebook/Editorial/AssignReviewer'; // The "Screened Books" list
+import FindAndAssign from './pages/ebook/Editorial/FindAndAssign'; // The assign specific candidates screen
+import ReviewerResponses from './pages/ebook/Editorial/ReviewerResponses';
+import FinalDecisionList from './pages/ebook/Editorial/FinalDecisionList'; // The Reviewed Books list
+import DecisionWorkspace from './pages/ebook/Editorial/DecisionWorkspace'; // The detailed decision screen
+import EditorialSettings from './pages/ebook/Editorial/EditorialSettings';
 function App() {
   return (
     <ThemeProvider>
@@ -148,6 +159,22 @@ function App() {
           <Route path="/ebook/author/revisions" element={<EbookAuthorRevisions />} />
           <Route path="/ebook/author/settings" element={<EbookAuthorSettings />} />
 
+ {/* Book Management */}
+  <Route path="/ebook/editorial/dashboard" element={<EditorialDashboard />} />
+        <Route path="/ebook/editorial/books" element={<AllBooksList />} />
+        <Route path="/ebook/editorial/book-details" element={<BookDetails />} />
+        <Route path="/ebook/editorial/screening" element={<InitialScreening />} />
+        
+        {/* Reviewer Assignment Workflow */}
+        <Route path="/ebook/editorial/reviewers" element={<AssignReviewer />} />
+        <Route path="/ebook/editorial/reviewers/assign" element={<FindAndAssign />} />
+        <Route path="/ebook/editorial/reviewers/responses" element={<ReviewerResponses />} />
+        
+        {/* Final Decision Workflow */}
+        <Route path="/ebook/editorial/reviews-list" element={<FinalDecisionList />} />
+        <Route path="/ebook/editorial/decision-workspace" element={<DecisionWorkspace />} />
+        <Route path="/ebook/editorial/settings" element={<EditorialSettings />} />
+         
           {/* ================= JOURNAL ADMIN ================= */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<Users />} />

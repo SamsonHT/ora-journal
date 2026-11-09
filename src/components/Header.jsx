@@ -8,15 +8,16 @@ export default function Header() {
 
   const isActive = (path) => location.pathname === path;
 
+  // Removed 'Main' from here so the center nav stays balanced
   const navLinks = [
-    { name: 'Home', path: '/' },
+    { name: 'Home', path: '/journal' },
     { name: 'About Us', path: '/about' },
     { 
       name: 'Issue', 
       path: '#', 
       submenu: [
         { name: 'Current Issue', path: '/issues/current' },
-        { name: 'All Issues (Journal Page)', path: '/journals' },
+        { name: 'Archive', path: '/journals' },
       ]
     },
     { name: 'Author Guide', path: '/author-guide' },
@@ -42,7 +43,7 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* Desktop Nav */}
+          {/* Desktop Nav (Centered) */}
           <nav className="hidden xl:flex items-center gap-6 2xl:gap-8 absolute left-1/2 top-0 -translate-x-1/2 h-full">
             {navLinks.map((link) => (
               <div key={link.name} className="relative group h-full flex items-center">
@@ -71,12 +72,22 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Actions */}
+          {/* Right Side Actions */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0 z-10">
-            <button className="hidden sm:flex w-9 h-9 rounded-full items-center justify-center text-gray-500 hover:text-[#7A1C39] hover:bg-gray-50 transition-all"><SearchOutlined className="text-[18px]" /></button>
+            <button className="hidden sm:flex w-9 h-9 rounded-full items-center justify-center text-gray-500 hover:text-[#7A1C39] hover:bg-gray-50 transition-all">
+              <SearchOutlined className="text-[18px]" />
+            </button>
+            
             <div className="hidden sm:block h-5 w-px bg-gray-200"></div>
-            <Link to="/login" className="hidden md:block text-[13px] font-bold text-gray-700 hover:text-[#7A1C39] transition-colors whitespace-nowrap">Sign In</Link>
-            <Link to="/register" className="hidden md:block text-[13px] font-bold bg-white border border-gray-300 text-gray-700 px-5 py-2 rounded hover:border-[#7A1C39] hover:text-[#7A1C39] transition-all whitespace-nowrap shadow-sm">Register</Link>
+            
+            {/* Main and Sign In grouped together on the right */}
+            <Link to="/" className="hidden md:block text-[13px] font-bold text-gray-700 hover:text-[#7A1C39] transition-colors whitespace-nowrap">
+              Main
+            </Link>
+            <Link to="/login" className="hidden md:block text-[13px] font-bold text-gray-700 hover:text-[#7A1C39] transition-colors whitespace-nowrap">
+              Sign In
+            </Link>
+
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="xl:hidden w-10 h-10 flex items-center justify-center text-gray-700 hover:text-[#7A1C39] transition-colors focus:outline-none">
               {isMobileMenuOpen ? <CloseOutlined className="text-xl" /> : <MenuOutlined className="text-xl" />}
             </button>
@@ -101,10 +112,19 @@ export default function Header() {
               )}
             </div>
           ))}
+          
           <div className="pt-4 mt-2 border-t border-gray-100 flex flex-col gap-3">
-            <button className="w-full flex items-center justify-center gap-2 py-3 bg-gray-50 rounded-lg text-gray-700 font-bold text-[14px]"><SearchOutlined /> Search</button>
-            <Link to="/login" onClick={handleLinkClick} className="w-full text-center py-3 border border-gray-300 rounded-lg text-gray-700 font-bold text-[14px] hover:bg-gray-50">Sign In</Link>
-            <Link to="/register" onClick={handleLinkClick} className="w-full text-center py-3 bg-[#7A1C39] rounded-lg text-white font-bold text-[14px] hover:bg-[#531324] shadow-md">Register</Link>
+            <button className="w-full flex items-center justify-center gap-2 py-3 bg-gray-50 rounded-lg text-gray-700 font-bold text-[14px]">
+              <SearchOutlined /> Search
+            </button>
+            <div className="flex gap-3">
+              <Link to="/" onClick={handleLinkClick} className="flex-1 text-center py-3 border border-gray-300 rounded-lg text-gray-700 font-bold text-[14px] hover:bg-gray-50">
+                Main
+              </Link>
+              <Link to="/login" onClick={handleLinkClick} className="flex-1 text-center py-3 bg-[#7A1C39] rounded-lg text-white font-bold text-[14px] hover:bg-[#60142e]">
+                Sign In
+              </Link>
+            </div>
           </div>
         </div>
       </div>

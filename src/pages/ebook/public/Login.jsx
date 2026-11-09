@@ -20,8 +20,8 @@ export default function Login() {
     if (role === 'Author') {
       navigate('/ebook/author/dashboard');
     } else if (role === 'Editorial') {
-      alert('Editorial Portal is not built yet. Coming soon!');
-      // navigate('/ebook/editorial/dashboard'); 
+      // ✅ FIXED: Now routes to the Editorial Dashboard we just built
+      navigate('/ebook/editorial/dashboard');
     } else if (role === 'Content Manager') {
       alert('Content Manager Portal is not built yet. Coming soon!');
       // navigate('/ebook/manager/dashboard');
