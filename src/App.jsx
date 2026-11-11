@@ -124,6 +124,7 @@ import CreateIsbn from './pages/ebook/content-manager/CreateIsbn';
 import ReadyToPublish from './pages/ebook/content-manager/ReadyToPublish';
 import OverviewReport from './pages/ebook/content-manager/OverviewReport';
 import ManagerSettings from './pages/ebook/content-manager/ManagerSettings';
+import FinalPublishing from './pages/ebook/content-manager/FinalPublishing';
 function App() {
   return (
     <ThemeProvider>
@@ -218,6 +219,7 @@ function App() {
 
         {/* 9. Ready to publish (final gate) */}
         <Route path="/content-manager/publish" element={<ReadyToPublish />} />
+<Route path="/content-manager/publish/setup/:id" element={<FinalPublishing />} />
 
         {/* 10. Overview report (analytics) */}
         <Route path="/content-manager/reports" element={<OverviewReport />} />
